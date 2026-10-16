@@ -117,7 +117,6 @@
   function smooth(a, b, x) { var t = clamp((x - a) / (b - a)); return t * t * (3 - 2 * t); }
   function ease(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
 
-  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // ---------- layout of the vault photo ----------
   var IMG_W = 2752, IMG_H = 1536, VAULT_D = 1360 / IMG_W; // vault diameter as a share of photo width
@@ -251,7 +250,6 @@
   function update(force) {
     ticking = false;
     var p = progress();
-    if (reduced) p = p < 0.02 ? 0 : Math.max(p, 0.33); // skip the vault animation
     if (!force && Math.abs(p - last) < 0.0003) return;
     last = p;
     render(p);

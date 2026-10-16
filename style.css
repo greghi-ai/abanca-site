@@ -5,11 +5,13 @@
   --ground: #5E554B;
   --deep: #2B2520;
   --story: #4A423A;
-  --stage: min(780px, 100svh);
+  --stage: max(560px, 100vh);
   --display: Anton, Impact, sans-serif;
   --mono: 'JetBrains Mono', ui-monospace, monospace;
   --spray: 'Rubik Spray Paint', Anton, sans-serif;
 }
+
+@supports (height: 100svh) { :root { --stage: max(560px, 100svh); } }
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
@@ -215,4 +217,5 @@ s { color: var(--muted); }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
+  .scroll-cue { animation: none; }
 }
