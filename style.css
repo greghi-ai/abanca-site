@@ -113,6 +113,8 @@ s { color: var(--muted); }
 .step { position: relative; min-height: var(--stage); display: flex; align-items: center; padding: 80px clamp(16px, 3vw, 40px); }
 .step-2 { justify-content: flex-end; }
 .step-3 { justify-content: flex-start; }
+.step-4 { justify-content: flex-end; }
+.print-img { position: absolute; height: auto; display: block; pointer-events: none; }
 .step-copy { max-width: 420px; display: flex; flex-direction: column; gap: 20px; position: relative; z-index: 2; }
 .step-copy p { margin: 0; font-size: 12px; line-height: 1.7; letter-spacing: 0.04em; color: var(--ink-2); }
 .step-buy { display: flex; flex-wrap: wrap; align-items: center; gap: 20px; }
@@ -219,7 +221,7 @@ s { color: var(--muted); }
 /* phones: shirt stays centred, copy sits under it */
 @media (max-width: 760px) {
   .nav-links { order: 3; width: 100%; gap: 8px 18px; }
-  .step-2, .step-3 { justify-content: center; align-items: flex-end; }
+  .step-2, .step-3, .step-4 { justify-content: center; align-items: flex-end; }
   .step-copy { background: rgba(43,37,32,0.82); padding: 20px; backdrop-filter: blur(6px); }
   .step-1 { padding-top: 24px; }
   .step1-space { order: -1; min-height: 50svh; }
