@@ -418,6 +418,17 @@
       state.key = key;
       paint(front, back, pal);
     },
+    // render one still frame at a given size and return it as an image URL (used for product cards)
+    snapshot: function (front, back, pal, o) {
+      if (!ok) return null;
+      var c = gl.canvas, w0 = c.width, h0 = c.height, a0 = aspect;
+      c.width = o.w; c.height = o.h; gl.viewport(0, 0, o.w, o.h); aspect = o.w / o.h;
+      api.setLook(front, back, pal);
+      api.draw({ x: 0, y: o.y || 0, z: 0, rx: o.rx == null ? 0.05 : o.rx, ry: o.ry || 0, rz: 0, s: o.s });
+      var url = c.toDataURL('image/png');
+      c.width = w0; c.height = h0; gl.viewport(0, 0, w0, h0); aspect = a0;
+      return url;
+    },
     draw: function (o) {
       if (!ok) return;
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);

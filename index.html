@@ -4,50 +4,50 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>A Banca Store — Cultura de rua</title>
-<meta name="description" content="A Banca Store: camisetas, calças baggy, conjuntos e bonés. 5% off no Pix, até 6x sem juros e frete grátis no Sudeste acima de R$299,99.">
-<meta name="theme-color" content="#2B2520">
+<meta name="description" content="A Banca Store: camisetas oversized, calças baggy, conjuntos e bonés. 5% de desconto no Pix, até 6x sem juros e frete grátis no Sudeste acima de R$ 299,99.">
+<meta name="theme-color" content="#16171A">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;500;700&family=Rubik+Spray+Paint&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=6">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=8">
 </head>
 <body>
 
-<!-- Promo bar -->
-<div class="promo">
-  <span>[ 5% OFF NO PIX ]</span>
-  <span>[ FRETE GRÁTIS SUDESTE ACIMA DE R$299,99 ]</span>
-  <span>[ ATÉ 6X SEM JUROS ]</span>
-  <span>[ 1ª TROCA GRÁTIS EM 7 DIAS ]</span>
-</div>
+<header class="nav" id="nav">
+  <a href="#" class="logo" aria-label="A Banca Store, início">A&nbsp;BANCA</a>
+  <nav class="nav-links" aria-label="Principal">
+    <a href="#basicas">Camisetas</a>
+    <a href="#calcas">Calças</a>
+    <a href="#conjunto">Conjuntos</a>
+    <a href="#">Bonés</a>
+    <a href="#loja">Loja física</a>
+  </nav>
+  <div class="nav-actions">
+    <button class="icon-btn" aria-label="Buscar">
+      <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+    </button>
+    <button class="icon-btn" aria-label="Sacola, 0 itens">
+      <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 8h14l-1 12H6L5 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+      <span class="bag-count">0</span>
+    </button>
+  </div>
+</header>
 
-<!-- SCROLL STORY: vault + password → shirt emerges → 3 steps -->
+<!-- SCROLL STORY: vault + password → camera dives in → 4 looks inside the vault -->
 <div class="story" id="story">
 
-  <nav class="nav" aria-label="Principal">
-    <a href="#" class="logo">A BANCA<sup>®</sup></a>
-    <div class="nav-links">
-      <a href="#basicas">[ CAMISETAS ]</a>
-      <a href="#estampadas">[ OVER ]</a>
-      <a href="#calcas">[ CALÇAS ]</a>
-      <a href="#conjunto">[ CONJUNTOS ]</a>
-      <a href="#">[ BONÉS ]</a>
-      <a href="#loja">[ LOJA FÍSICA ]</a>
-    </div>
-    <div class="nav-actions">
-      <button class="icon-btn" aria-label="Buscar">
-        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-      </button>
-      <button class="icon-btn solid" aria-label="Carrinho">
-        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 8h14l-1 12H6L5 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
-      </button>
-    </div>
-  </nav>
-
-  <!-- sticky stage -->
   <div class="stage" aria-hidden="true">
 
-    <!-- vault scene (photo split into layers: wall, door, dial plate) -->
+    <!-- inside the vault: wall of deposit boxes, spotlight, floor -->
+    <div class="room" id="room">
+      <div class="lockers" id="lockers"></div>
+      <div class="room-floor"></div>
+      <canvas class="room-refl" id="refl"></canvas>
+      <div class="room-spot"></div>
+      <div class="room-vignette"></div>
+    </div>
+
+    <!-- the vault on the street wall (photo split into layers) -->
     <div class="vbg" id="vbg"></div>
     <div class="vscene" id="vscene">
       <img class="vwall" src="assets/vault/wall.jpg" alt="" decoding="async">
@@ -78,149 +78,161 @@
     <div class="vshade" id="vshade"></div>
 
     <div class="intro" id="intro">
-      <div class="intro-left">
-        <span class="label">[ COFRE Nº 01 · ACESSO RESTRITO ]</span>
-        <span class="intro-title">Entre<br>na Banca</span>
-      </div>
-      <span class="intro-hint">ROLE PRA DIGITAR<br>A SENHA <i class="scroll-cue"></i></span>
+      <p class="intro-title">Entre na<br>Banca</p>
+      <p class="intro-hint">Role para digitar a senha<i class="scroll-cue"></i></p>
     </div>
-    <div class="caption" id="cap1">[ SENHA ACEITA ] · DESTRAVANDO…</div>
-    <div class="caption" id="cap2">[ ENTRANDO NO COFRE ]</div>
+    <p class="caption" id="cap1">Senha aceita</p>
 
     <!-- 3D shirt -->
     <div class="shirt-shadow" id="shadow"></div>
     <canvas class="shirt-gl" id="shirtGL"></canvas>
-    <div class="look-tag" id="lookTag" aria-hidden="true">A BANCA</div>
-    <div class="look-progress" id="lookProgress"><span></span><span></span><span></span><span></span></div>
   </div>
 
-  <!-- copy for the 4 looks (sits over the stage, shown one at a time) -->
+  <!-- the 4 looks (shown one at a time over the stage) -->
   <div class="looks">
-    <article class="look-copy left" data-look="0">
-      <span class="label">[ 01 / 04 ] · BÁSICAS · FRENTE</span>
-      <h2 class="display">A Banca<br>Club<sup>®</sup></h2>
-      <p>Camiseta over off white. Logo pequeno no peito, do P ao GG.</p>
-      <div class="step-buy"><span class="step-price">[PREÇO]</span><a href="#basicas" class="ghost-btn">VER BÁSICAS →</a></div>
+    <article class="look left" data-look="0">
+      <p class="look-count">Caixa 01 de 04</p>
+      <h2 class="look-title">A Banca Club<sup>®</sup></h2>
+      <p class="look-desc">Camiseta oversized off white com o logo pequeno no peito.</p>
+      <dl class="look-specs">
+        <div><dt>Cor</dt><dd>Off white</dd></div>
+        <div><dt>Tamanhos</dt><dd>P ao GG</dd></div>
+        <div><dt>Linha</dt><dd>Básicas</dd></div>
+      </dl>
+      <div class="look-buy">
+        <span class="look-price">[PREÇO]</span>
+        <a class="btn" href="#">Comprar</a>
+        <a class="text-link" href="#basicas">Ver básicas</a>
+      </div>
     </article>
-    <article class="look-copy right" data-look="1">
-      <span class="label">[ 02 / 04 ] · EXCLUSIVAS · COSTAS</span>
-      <h2 class="display">Rosas<br>do Club</h2>
-      <p>Camiseta over preta. A Banca Club nas costas, com rosas e o mar.</p>
-      <div class="step-buy"><span class="step-price">[PREÇO]</span><a href="#estampadas" class="ghost-btn">VER EXCLUSIVAS →</a></div>
+    <article class="look right" data-look="1">
+      <p class="look-count">Caixa 02 de 04</p>
+      <h2 class="look-title">Rosas do Club</h2>
+      <p class="look-desc">Camiseta oversized preta com a arte das rosas e do mar nas costas.</p>
+      <dl class="look-specs">
+        <div><dt>Cor</dt><dd>Preta</dd></div>
+        <div><dt>Estampa</dt><dd>Costas</dd></div>
+        <div><dt>Linha</dt><dd>Exclusivas</dd></div>
+      </dl>
+      <div class="look-buy">
+        <span class="look-price">[PREÇO]</span>
+        <a class="btn" href="#">Comprar</a>
+        <a class="text-link" href="#estampadas">Ver exclusivas</a>
+      </div>
     </article>
-    <article class="look-copy left" data-look="2">
-      <span class="label">[ 03 / 04 ] · CRISTÃS · FRENTE</span>
-      <h2 class="display">We<br>Love</h2>
-      <p>Camiseta A Banca We Love. 1 João 4:19 no peito.</p>
-      <div class="step-buy"><span class="step-price">[PREÇO]</span><a href="#estampadas" class="ghost-btn">VER CRISTÃS →</a></div>
+    <article class="look left" data-look="2">
+      <p class="look-count">Caixa 03 de 04</p>
+      <h2 class="look-title">We Love</h2>
+      <p class="look-desc">Camiseta oversized off white com 1 João 4:19 no peito.</p>
+      <dl class="look-specs">
+        <div><dt>Cor</dt><dd>Off white</dd></div>
+        <div><dt>Estampa</dt><dd>Frente</dd></div>
+        <div><dt>Linha</dt><dd>Cristãs</dd></div>
+      </dl>
+      <div class="look-buy">
+        <span class="look-price">[PREÇO]</span>
+        <a class="btn" href="#">Comprar</a>
+        <a class="text-link" href="#estampadas">Ver cristãs</a>
+      </div>
     </article>
-    <article class="look-copy right" data-look="3">
-      <span class="label">[ 04 / 04 ] · ARTISTAS · COSTAS</span>
-      <h2 class="display">Rei do pop<br>nas costas</h2>
-      <p>Camiseta A Banca Michael. Estampa grande nas costas.</p>
-      <div class="step-buy"><span class="step-price">[PREÇO]</span><a href="#estampadas" class="ghost-btn">VER ARTISTAS →</a></div>
+    <article class="look right" data-look="3">
+      <p class="look-count">Caixa 04 de 04</p>
+      <h2 class="look-title">Michael</h2>
+      <p class="look-desc">Camiseta oversized preta com a estampa grande do rei do pop nas costas.</p>
+      <dl class="look-specs">
+        <div><dt>Cor</dt><dd>Preta</dd></div>
+        <div><dt>Estampa</dt><dd>Costas</dd></div>
+        <div><dt>Linha</dt><dd>Artistas</dd></div>
+      </dl>
+      <div class="look-buy">
+        <span class="look-price">[PREÇO]</span>
+        <a class="btn" href="#">Comprar</a>
+        <a class="text-link" href="#estampadas">Ver artistas</a>
+      </div>
     </article>
   </div>
 
-  <!-- scroll distance for the whole story -->
   <div class="track"><h1 class="sr-only">A Banca Store — entre na Banca</h1></div>
 </div>
 <!-- /SCROLL STORY -->
 
 <main class="site">
+
+  <p class="perks">5% de desconto no Pix, até 6x sem juros e frete grátis no Sudeste acima de R$ 299,99.</p>
+
   <a href="#" class="sale" id="conjunto">
-    <span class="sale-tag">[ AGASALHOS ATÉ 40% OFF ]</span>
-    <span class="sale-title">Conjunto Moletom Zíper Duplo</span>
-    <span class="sale-price">MARROM · BEGE · <s>R$599,99</s> <b>R$289,99</b> · −52%</span>
-    <span class="sale-cta">COMPRAR →</span>
+    <div class="sale-copy">
+      <p class="sale-kicker">Agasalhos com até 40% de desconto</p>
+      <h2 class="sale-title">Conjunto moletom zíper duplo</h2>
+      <p class="sale-price"><s>R$ 599,99</s> <b>R$ 289,99</b> <span>ou R$ 275,49 no Pix</span></p>
+    </div>
+    <div class="sale-side">
+      <span class="tag tag-lg">−52%</span>
+      <div class="sale-swatches"><span style="background:#6B4E3A" title="Marrom"></span><span style="background:#C9B79C" title="Bege"></span></div>
+      <span class="btn">Comprar conjunto</span>
+    </div>
   </a>
 
-  <!-- BÁSICAS -->
-  <section class="block" id="basicas">
-    <div class="block-head">
-      <h2 class="section-title">Básicas</h2>
-      <div class="meta">[ CULTURE BASIC ]<br>[ BASIC PREMIUM ]<br>[ COMPRESSÃO ]</div>
-      <div class="meta">NUNCA TE DEIXAM NA MÃO<br>P · M · G · GG<br>7 CORES</div>
-      <button class="solid-btn">FILTROS</button>
+  <section class="shelf" id="basicas" aria-labelledby="h-basicas">
+    <div class="shelf-head">
+      <h2 id="h-basicas" class="shelf-title">Básicas</h2>
+      <p class="shelf-sub">Lisas, do P ao GG, em sete cores. As que você usa toda semana.</p>
+      <a class="text-link" href="#">Ver todas</a>
     </div>
-    <div class="grid">
-      <div class="kit">
-        <div class="kit-tag" aria-hidden="true">KIT</div>
-        <span class="kit-photo">[ FOTO: 3 CAMISETAS DOBRADAS ]</span>
-        <div class="kit-body">
-          <h3 class="kit-title">Kit 3<br>Camisetas<sup>™</sup></h3>
-          <div class="kit-buy">
-            <a href="#" class="octa small" aria-label="Comprar Kit 3 Camisetas"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 17L17 7"/><path d="M9 7h8v8"/></svg></a>
-            <div class="kit-price">MONTE SUA COMBINAÇÃO<span>R$259,90 <s>R$379,99</s></span></div>
-          </div>
-        </div>
-      </div>
-      <div data-products="basics" class="contents"></div>
-    </div>
-    <div class="grid" data-products="basics2"></div>
+    <div class="grid" data-products="basics"></div>
   </section>
 
-  <!-- Benefits -->
-  <section class="benefits" aria-label="Vantagens">
-    <div><span>[ 01 ]</span><b>6x sem juros</b></div>
-    <div><span>[ 02 ]</span><b>5% off no Pix</b></div>
-    <div><span>[ 03 ]</span><b>Frete grátis Sudeste</b><small>acima de R$299,99</small></div>
-    <div><span>[ 04 ]</span><b>1ª troca grátis</b><small>em até 7 dias</small></div>
-  </section>
-
-  <!-- CALÇAS -->
-  <section class="block" id="calcas">
-    <div class="block-head">
-      <h2 class="section-title">Calças Baggy</h2>
-      <div class="meta">[ BORDADAS ]<br>[ ESTONADAS ]<br>[ DESTROYED ]</div>
-      <div class="meta">COMPLETE SEU OUTFIT<br>38 · 40 · 42 · 44 · 46</div>
-      <a href="#" class="ghost-btn">VER TODAS →</a>
+  <section class="shelf" id="calcas" aria-labelledby="h-calcas">
+    <div class="shelf-head">
+      <h2 id="h-calcas" class="shelf-title">Calças baggy</h2>
+      <p class="shelf-sub">Bordadas, estonadas e destroyed. Numeração do 38 ao 46.</p>
+      <a class="text-link" href="#">Ver todas</a>
     </div>
     <div class="grid" data-products="pants"></div>
   </section>
 
-  <!-- ESTAMPADAS -->
-  <section class="block" id="estampadas">
-    <div class="block-head">
-      <h2 class="section-title">Estampadas</h2>
-      <div class="meta">[ ESPORTES ]<br>[ CRISTÃS ]<br>[ ARTISTAS ]</div>
-      <div class="meta">CRIE SUA IDENTIDADE<br>PRETO · OFF WHITE</div>
-      <a href="#" class="ghost-btn">VER TODAS →</a>
+  <section class="shelf" id="estampadas" aria-labelledby="h-estampadas">
+    <div class="shelf-head">
+      <h2 id="h-estampadas" class="shelf-title">Estampadas</h2>
+      <p class="shelf-sub">Esportes, fé e os artistas que marcaram a rua. Preto ou off white.</p>
+      <a class="text-link" href="#">Ver todas</a>
     </div>
     <div class="grid" data-products="prints"></div>
   </section>
 
-  <!-- MANIFESTO / LOJA FÍSICA -->
-  <footer class="manifesto" id="loja">
-    <div class="manifesto-tag" aria-hidden="true">A BANCA<br>CULTURE</div>
-    <span class="manifesto-photo" aria-hidden="true">[ FOTO: FACHADA DA LOJA / RUA ]</span>
-    <div class="manifesto-top">
-      <div class="manifesto-left">
-        <p>A Banca nasceu da rua.<br>Não como tendência,<br>mas como identidade.</p>
-        <span class="label">[ PROTOCOLO: STREET_01 ]</span>
-      </div>
-      <div class="manifesto-right">
-        <span class="label">[ LOJA FÍSICA ]</span>
-        Maxi Shopping · Piso 1 · Loja 1425<br>Av. Antonio Frederico Ozanam, 6000
-        <a href="https://www.google.com/maps/search/?api=1&query=Av.+Antonio+Frederico+Ozanam,+6000+Maxi+Shopping" class="ghost-btn">COMO CHEGAR →</a>
+  <ul class="benefits" aria-label="Vantagens">
+    <li><b>Até 6x</b> sem juros no cartão</li>
+    <li><b>5% off</b> pagando no Pix</li>
+    <li><b>Frete grátis</b> no Sudeste acima de R$ 299,99</li>
+    <li><b>1ª troca grátis</b> em até 7 dias</li>
+  </ul>
+
+  <footer class="store" id="loja">
+    <div class="store-main">
+      <h2 class="store-title">A loja fica no<br>Maxi Shopping</h2>
+      <address class="store-address">Piso 1, loja 1425<br>Av. Antonio Frederico Ozanam, 6000</address>
+      <div class="store-actions">
+        <a class="btn" href="https://www.google.com/maps/search/?api=1&query=Av.+Antonio+Frederico+Ozanam,+6000+Maxi+Shopping">Como chegar</a>
+        <a class="btn btn-ghost" href="https://wa.me/5511940471041">Chamar no WhatsApp</a>
       </div>
     </div>
-    <div class="manifesto-bottom">
-      <h2 class="display">Feito pra rua<br>Vestido com fé<br>Pensado pra durar</h2>
-      <div class="contact">
-        <a href="https://wa.me/5511940471041">WHATSAPP +55 11 94047-1041</a>
+    <div class="store-note">
+      <p>Sim, 1425 é a senha do cofre.</p>
+    </div>
+    <div class="store-bottom">
+      <a href="#" class="logo">A&nbsp;BANCA</a>
+      <nav aria-label="Ajuda">
+        <a href="#">Trocas e devoluções</a>
+        <a href="#">Minhas compras</a>
+        <a href="https://wa.me/5511940471041">(11) 94047-1041</a>
         <span>[SEU E-MAIL DE CONTATO]</span>
-        <span>TROCAS E DEVOLUÇÕES · MINHAS COMPRAS</span>
-        <div class="copy">
-          <span>©2026 A BANCA STORE<br>TODOS OS DIREITOS RESERVADOS</span>
-          <span class="barcode" aria-hidden="true"></span>
-        </div>
-      </div>
+      </nav>
+      <p class="copy">© 2026 A Banca Store</p>
     </div>
   </footer>
 </main>
 
-<script src="shirt3d.js?v=6"></script>
-<script src="main.js?v=6"></script>
+<script src="shirt3d.js?v=8"></script>
+<script src="main.js?v=8"></script>
 </body>
 </html>
