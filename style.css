@@ -219,3 +219,22 @@ s { color: var(--muted); }
   html { scroll-behavior: auto; }
   .scroll-cue { animation: none; }
 }
+
+/* ---------- story v2: one sticky stage, copy for the 4 looks on top ---------- */
+.track { height: calc(var(--stage) * 2.7); }
+.looks { position: sticky; top: 0; height: var(--stage); margin-bottom: calc(-1 * var(--stage)); z-index: 2; pointer-events: none; }
+.look-copy { position: absolute; top: 50%; width: min(420px, 34vw); display: flex; flex-direction: column; gap: 18px; opacity: 0; visibility: hidden; transform: translateY(-50%); }
+.look-copy.left { left: clamp(16px, 5vw, 80px); }
+.look-copy.right { right: clamp(16px, 5vw, 80px); }
+.look-copy.on { pointer-events: auto; }
+.look-copy p { margin: 0; font-size: 12px; line-height: 1.7; letter-spacing: 0.04em; color: var(--ink-2); max-width: 340px; }
+.look-copy .display { font-size: clamp(44px, 5.4vw, 84px); }
+.look-tag { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%) rotate(-7deg); font-family: var(--spray); font-size: clamp(140px, 22vw, 360px); line-height: 0.8; color: rgba(236,226,212,0.08); filter: blur(1.5px); white-space: nowrap; opacity: 0; }
+.look-progress { position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); display: flex; gap: 8px; opacity: 0; }
+.look-progress span { width: 34px; height: 2px; background: rgba(243,238,230,0.25); transition: background 0.3s; }
+.look-progress span.on { background: var(--ink); }
+
+@media (max-width: 760px) {
+  .look-copy { top: auto; bottom: 64px; left: 16px !important; right: 16px !important; width: auto; transform: none; background: rgba(43,37,32,0.85); padding: 18px; backdrop-filter: blur(6px); gap: 12px; }
+  .look-copy .display { font-size: 40px; }
+}

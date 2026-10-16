@@ -18,10 +18,10 @@
   // side 'front' = print on the chest, 'back' = print on the back.
   // x / y / w = where the print sits on the shirt, in % of the shirt's width/height.
   var LOOKS = [
-    { side: 'front', color: 'branca',   src: 'assets/prints/1-frente-club.png',    x: 50, y: 21, w: 24 },
-    { side: 'back',  color: 'preta',    src: 'assets/prints/2-costas-rosas.png',   x: 50, y: 16, w: 40 },
-    { side: 'front', color: 'offwhite', src: 'assets/prints/3-frente-john.png',    x: 50, y: 21, w: 34 },
-    { side: 'back',  color: 'preta',    src: 'assets/prints/4-costas-michael.png', x: 50, y: 15, w: 46 }
+    { side: 'front', color: 'branca',   src: 'assets/prints/1-frente-club.png',    x: 50, y: 12, w: 22 },
+    { side: 'back',  color: 'preta',    src: 'assets/prints/2-costas-rosas.png',   x: 50, y: 8, w: 44 },
+    { side: 'front', color: 'offwhite', src: 'assets/prints/3-frente-john.png',    x: 50, y: 12, w: 34 },
+    { side: 'back',  color: 'preta',    src: 'assets/prints/4-costas-michael.png', x: 50, y: 7, w: 50 }
   ];
   var BLANK = { src: '', x: 50, y: 20, w: 0 };
   LOOKS.forEach(function (l) { var i = new Image(); i.src = l.src; }); // preload
@@ -86,6 +86,7 @@
   // ---------- size / colour pickers ----------
   function chips(id, values, initial) {
     var box = document.getElementById(id);
+    if (!box) return;
     values.forEach(function (v) {
       var b = document.createElement('button');
       b.className = 'chip';
@@ -134,16 +135,36 @@
     if (has3D) window.Shirt3D.resize(stageW, stageH);
   }
 
+  var lookCopy = Array.prototype.slice.call(document.querySelectorAll('.look-copy'));
+  var lookTag = $('lookTag'), lookBars = Array.prototype.slice.call(document.querySelectorAll('#lookProgress span')), lookProgress = $('lookProgress');
+
+  // timeline (p goes 0 → 1 over the story, ~1.7 screens of scrolling):
+  //   0    – 0.11  password 1-4-2-5 typed on the door's display
+  //   0.12 – 0.19  dial turns, door unlatches
+  //   0.19 – 0.28  door swings open, light pours out
+  //   0.25 – 0.37  camera flies into the vault
+  //   0.35 – 0.45  shirt arrives → then the 4 looks
+  var T = {
+    digits: [0.02, 0.045, 0.07, 0.095], ok: 0.105,
+    dial: [0.12, 0.19], pop: [0.185, 0.2], open: [0.2, 0.28], dive: [0.25, 0.37], sceneOut: [0.345, 0.385],
+    arrive: [0.355, 0.44],
+    // [p, left %, turn°]  — rests are the flat stretches
+    path: function (X) {
+      return [
+        [0.44, X[0], 0],
+        [0.47, X[1], 0], [0.53, X[1], 0],     // look 1 · front
+        [0.61, X[2], 180], [0.68, X[2], 180], // look 2 · back
+        [0.76, X[3], 360], [0.83, X[3], 360], // look 3 · front
+        [0.92, X[4], 540]                     // look 4 · back
+      ];
+    },
+    rests: [[0.46, 0.555], [0.6, 0.705], [0.75, 0.855], [0.905, 1.01]]
+  };
+
   function render(p) {
     var narrow = stageW < 760;
-    // timeline (p goes 0 → 1 over the whole story):
-    //   0    – 0.10  password 1-4-2-5 typed on the door's display
-    //   0.10 – 0.16  dial turns, door unlatches
-    //   0.16 – 0.23  door swings open, light pours out
-    //   0.21 – 0.31  camera flies into the vault
-    //   0.30 – 0.42  shirt arrives, then: 0.5 look 1 · 0.667 look 2 · 0.833 look 3 · 1 look 4
-    var typed = [0.025, 0.045, 0.065, 0.085].filter(function (t) { return p >= t; }).length;
-    var accepted = p >= 0.095;
+    var typed = T.digits.filter(function (t) { return p >= t; }).length;
+    var accepted = p >= T.ok;
     cells.forEach(function (c, i) {
       c.firstChild.textContent = i < typed ? CODE[i] : '';
       c.classList.toggle('on', i < typed);
@@ -152,10 +173,10 @@
     vlabel.textContent = accepted ? 'LIBERADO' : (typed ? 'DIGITANDO' : 'TRAVADO');
     vlabel.classList.toggle('ok', accepted);
 
-    var dial = ease(smooth(0.1, 0.155, p)) * 450;
-    var pop = smooth(0.15, 0.165, p);
-    var open = ease(smooth(0.165, 0.235, p));
-    var dive = smooth(0.205, 0.31, p);
+    var dial = ease(smooth(T.dial[0], T.dial[1], p)) * 450;
+    var pop = smooth(T.pop[0], T.pop[1], p);
+    var open = ease(smooth(T.open[0], T.open[1], p));
+    var dive = smooth(T.dive[0], T.dive[1], p);
     var diveE = dive * dive * (1.6 - 0.6 * dive);
 
     vplate.style.transform = 'rotate(' + dial.toFixed(1) + 'deg)';
@@ -163,33 +184,25 @@
     vlight.style.opacity = (Math.max(pop * 0.35, open) * (1 - 0.85 * dive)).toFixed(3);
     vrays.style.opacity = (open * (1 - dive)).toFixed(3);
     vrays.style.transform = 'rotate(' + (p * 120).toFixed(1) + 'deg)';
-    var zoom = 1 + diveE * 11;
-    vscene.style.transform = 'scale(' + zoom.toFixed(3) + ')';
+    vscene.style.transform = 'scale(' + (1 + diveE * 11).toFixed(3) + ')';
     vbg.style.transform = 'scale(' + (1 + diveE * 0.6).toFixed(3) + ')';
-    var sceneOut = smooth(0.285, 0.33, p);
+    var sceneOut = smooth(T.sceneOut[0], T.sceneOut[1], p);
     vscene.style.opacity = vbg.style.opacity = vshade.style.opacity = (1 - sceneOut).toFixed(3);
-    vscene.style.visibility = sceneOut >= 1 ? 'hidden' : 'visible';
-    vbg.style.visibility = vscene.style.visibility;
+    vscene.style.visibility = vbg.style.visibility = sceneOut >= 1 ? 'hidden' : 'visible';
 
-    var introOut = smooth(0.012, 0.05, p);
+    var introOut = smooth(0.008, 0.04, p);
     intro.style.opacity = (1 - introOut).toFixed(3);
     intro.style.transform = 'translateY(' + (-24 * introOut).toFixed(1) + 'px)';
-    cap1.style.opacity = (smooth(0.095, 0.11, p) * (1 - smooth(0.15, 0.165, p))).toFixed(3);
-    cap2.style.opacity = (smooth(0.2, 0.215, p) * (1 - smooth(0.27, 0.29, p))).toFixed(3);
+    cap1.style.opacity = (smooth(T.ok, T.ok + 0.012, p) * (1 - smooth(T.pop[0], T.pop[1], p))).toFixed(3);
+    cap2.style.opacity = (smooth(T.dive[0] - 0.01, T.dive[0] + 0.01, p) * (1 - smooth(T.dive[1] - 0.04, T.dive[1] - 0.015, p))).toFixed(3);
 
-    // ---- shirt path: [p, left %, turn in degrees] (holds where a look rests)
-    var X = narrow ? [50, 50, 50, 50, 50] : [50, 64, 31, 67, 31];
-    var K = [
-      [0.33, X[0], 0],
-      [0.42, X[1], 0], [0.52, X[1], 0],      // look 1 · front
-      [0.61, X[2], 180], [0.69, X[2], 180],  // look 2 · back
-      [0.78, X[3], 360], [0.86, X[3], 360],  // look 3 · front
-      [0.96, X[4], 540]                      // look 4 · back
-    ];
-    var restTop = narrow ? 36 : 52;
-    var arrive = ease(smooth(0.29, 0.33, p));
-    var left = X[0], top = 50, ry, tilt = 0, sway = 0;
-    if (p < K[0][0]) { ry = lerp(-360, 0, arrive); }
+    // ---- shirt
+    var X = narrow ? [50, 50, 50, 50, 50] : [50, 64, 35, 65, 35];
+    var K = T.path(X);
+    var restTop = narrow ? 37 : 50;
+    var arrive = ease(smooth(T.arrive[0], T.arrive[1], p));
+    var left = X[0], top = narrow ? 42 : 50, ry, tilt = 0, sway = 0;
+    if (p < K[0][0]) { ry = lerp(-300, 0, arrive); }
     else {
       left = K[K.length - 1][1]; ry = K[K.length - 1][2]; top = restTop;
       for (var k = 0; k < K.length - 1; k++) {
@@ -197,69 +210,85 @@
           var t = ease((p - K[k][0]) / (K[k + 1][0] - K[k][0]));
           left = lerp(K[k][1], K[k + 1][1], t);
           ry = lerp(K[k][2], K[k + 1][2], t);
-          top = k === 0 ? lerp(50, restTop, t) : restTop;
+          top = k === 0 ? lerp(narrow ? 42 : 50, restTop, t) : restTop;
           var dir = K[k + 1][1] < K[k][1] ? -1 : 1;
-          tilt = Math.sin(t * Math.PI) * 6 * dir;
-          sway = Math.sin(t * Math.PI) * 0.1;
+          tilt = Math.sin(t * Math.PI) * 5 * dir;
+          sway = Math.sin(t * Math.PI);
           break;
         }
       }
     }
-
-    // which look is showing: colour switches while the shirt is edge-on (90°, 270°, 450°)
     var r = Math.max(0, ry);
     var look = r < 90 ? 0 : r < 270 ? 1 : r < 450 ? 2 : 3;
     var pal = PALETTES[LOOKS[look].color];
-
-    var shirtOn = smooth(0.29, 0.32, p);
+    var shirtOn = smooth(T.arrive[0] - 0.01, T.arrive[0] + 0.03, p);
     glCanvas.style.opacity = shirtOn.toFixed(3);
     if (has3D && shirtOn > 0) {
-      // while it arrives spinning, the back stays plain so the first look reads clean
       var backLook = p < K[0][0] ? BLANK : LOOKS[r < 360 ? 1 : 3];
       window.Shirt3D.setLook(LOOKS[r < 180 ? 0 : 2], backLook, pal);
       var VH = window.Shirt3D.VIEW_H, VW = VH * stageW / stageH;
-      var s = Math.min(VH * (narrow ? 0.27 : 0.31), VW * 0.4);
+      var s = Math.min(VH * (narrow ? 0.5 : 0.66) / window.Shirt3D.HEIGHT, VW * (narrow ? 0.62 : 0.34) / 3.0);
+      // an idle breathing turn while it rests, so it never looks frozen
+      var idle = Math.sin(p * 90) * 4;
       window.Shirt3D.draw({
         x: (left / 100 - 0.5) * VW,
         y: -(top / 100 - 0.5) * VH,
-        z: lerp(-26, 0, arrive),
-        rx: 0.08 + sway * 0.4,
-        ry: ry * Math.PI / 180,
+        z: lerp(-24, 0, arrive),
+        rx: 0.06 + sway * 0.05,
+        ry: (ry + idle) * Math.PI / 180,
         rz: tilt * Math.PI / 180,
         s: s
       });
-      // floor shadow under the shirt
-      var px = left / 100 * stageW, py = (top / 100) * stageH + s / VH * stageH * 1.18;
-      var sw = s / VH * stageH * 1.5 * (0.55 + 0.45 * Math.abs(Math.cos(ry * Math.PI / 180)));
+      var hpx = s * window.Shirt3D.HEIGHT / VH * stageH;
+      var px = left / 100 * stageW, py = top / 100 * stageH + hpx * 0.53;
+      var sw = hpx * 0.95 * (0.6 + 0.4 * Math.abs(Math.cos(ry * Math.PI / 180)));
       shadow.style.width = sw.toFixed(0) + 'px';
-      shadow.style.transform = 'translate(' + (px - sw / 2).toFixed(1) + 'px,' + (py - 15).toFixed(1) + 'px)';
       shadow.style.left = shadow.style.top = '0';
-      shadow.style.opacity = (smooth(0.36, 0.44, p) * 0.9).toFixed(3);
+      shadow.style.transform = 'translate(' + (px - sw / 2).toFixed(1) + 'px,' + (py - 15).toFixed(1) + 'px)';
+      shadow.style.opacity = (smooth(0.4, 0.46, p) * 0.9).toFixed(3);
     } else {
       shadow.style.opacity = '0';
     }
+
+    // ---- look copy, spray tag and progress bars
+    var active = -1;
+    lookCopy.forEach(function (el, i) {
+      var w = T.rests[i];
+      var o = smooth(w[0] - 0.03, w[0], p) * (1 - smooth(w[1], w[1] + 0.03, p));
+      if (o > 0.5) active = i;
+      el.style.opacity = o.toFixed(3);
+      el.style.visibility = o > 0.01 ? 'visible' : 'hidden';
+      el.classList.toggle('on', o > 0.5);
+      var dy = (1 - o) * 24;
+      el.style.transform = narrow ? 'translateY(' + dy.toFixed(1) + 'px)' : 'translateY(calc(-50% + ' + dy.toFixed(1) + 'px))';
+    });
+    var after = smooth(0.42, 0.47, p);
+    lookTag.style.opacity = after.toFixed(3);
+    lookProgress.style.opacity = after.toFixed(3);
+    lookBars.forEach(function (b, i) { b.classList.toggle('on', i <= Math.max(0, look)); });
   }
 
-  // ---------- scroll loop ----------
-  var ticking = false, last = -1;
+  // ---------- scroll loop (eased, so wheel clicks glide instead of jumping) ----------
+  var target = 0, current = 0, running = false;
   function progress() {
     var r = story.getBoundingClientRect();
     var span = Math.max(1, r.height - stage.offsetHeight);
     return clamp(-r.top / span);
   }
-  function update(force) {
-    ticking = false;
-    var p = progress();
-    if (!force && Math.abs(p - last) < 0.0003) return;
-    last = p;
-    render(p);
+  function tick() {
+    var d = target - current;
+    current = Math.abs(d) < 0.0004 ? target : current + d * 0.14;
+    render(current);
+    if (current !== target) requestAnimationFrame(tick); else running = false;
   }
   function onScroll() {
-    if (!ticking) { ticking = true; requestAnimationFrame(function () { update(false); }); }
+    target = progress();
+    if (!running) { running = true; requestAnimationFrame(tick); }
   }
-  if (has3D) window.Shirt3D.onChange = function () { update(true); };
+  if (has3D) window.Shirt3D.onChange = function () { render(current); };
   window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', function () { layout(); update(true); });
+  window.addEventListener('resize', function () { layout(); target = current = progress(); render(current); });
   layout();
-  update(true);
+  target = current = progress();
+  render(current);
 })();

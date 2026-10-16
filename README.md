@@ -9,14 +9,14 @@ Nova home da [A Banca Store](https://www.abancastore.com.br): site estático (HT
 2. Rolando, a senha **1425** (número da loja no Maxi Shopping) aparece no visor da porta.
 3. "LIBERADO": a roda gira, a porta destrava, abre na dobradiça e a luz sai de dentro.
 4. A câmera entra no cofre e o site aparece lá dentro.
-5. A camiseta 3D (WebGL puro, `shirt3d.js`, sem bibliotecas) chega girando e, a cada rolada, vira 180° e troca de peça
+5. A camiseta 3D (WebGL puro, `shirt3d.js`, sem bibliotecas — tronco, mangas caídas, gola canelada, barra e dobras modelados no código) chega girando e, a cada rolada, vira 180° e troca de peça
    (a cor e a estampa mudam no instante em que ela fica de perfil):
    - **01 · A Banca Club®** — frente, branca;
    - **02 · Rosas do Club** — costas, preta;
    - **03 · We Love (1 João 4:19)** — frente, off white;
    - **04 · Michael** — costas, preta.
 
-Quem tem "reduzir movimento" ativado no sistema pula a animação do cofre.
+Tudo isso acontece em ~1,7 tela de rolagem (uns 10 a 19 cliques de rodinha); o movimento é suavizado entre um clique e outro.
 
 ## Rodar localmente
 
