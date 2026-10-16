@@ -9,20 +9,21 @@
   var CODE = ['1', '4', '2', '5']; // loja 1425 no Maxi Shopping
 
   var PALETTES = {
-    branca:   { fab: '#E4E0D7', hi: '#FAF8F3', edge: ['#BDB8AE', '#CBC6BC'], seam: '#CFCAC0' },
-    offwhite: { fab: '#D8D1C2', hi: '#F1ECE1', edge: ['#B2AA9B', '#BFB8A9'], seam: '#C6BEAF' },
-    preta:    { fab: '#1A1918', hi: '#3A3836', edge: ['#0D0C0C', '#141312'], seam: '#454240' }
+    branca:   { fab: '#EAE7E1', rib: '#DCD8D0', seam: '#CFCAC1', inner: '#B9B4AB', dark: false },
+    offwhite: { fab: '#DDD6C8', rib: '#CEC6B6', seam: '#C3BBAA', inner: '#ACA493', dark: false },
+    preta:    { fab: '#262422', rib: '#1E1C1B', seam: '#3A3734', inner: '#121110', dark: true }
   };
 
   // The 4 looks of the scroll: the shirt turns 180° between each one.
   // side 'front' = print on the chest, 'back' = print on the back.
   // x / y / w = where the print sits on the shirt, in % of the shirt's width/height.
   var LOOKS = [
-    { side: 'front', color: 'branca',   src: 'assets/prints/1-frente-club.png',    x: 50, y: 24, w: 30 },
-    { side: 'back',  color: 'preta',    src: 'assets/prints/2-costas-rosas.png',   x: 50, y: 15, w: 40 },
-    { side: 'front', color: 'offwhite', src: 'assets/prints/3-frente-john.png',    x: 50, y: 23, w: 36 },
-    { side: 'back',  color: 'preta',    src: 'assets/prints/4-costas-michael.png', x: 50, y: 14, w: 50 }
+    { side: 'front', color: 'branca',   src: 'assets/prints/1-frente-club.png',    x: 50, y: 21, w: 24 },
+    { side: 'back',  color: 'preta',    src: 'assets/prints/2-costas-rosas.png',   x: 50, y: 16, w: 40 },
+    { side: 'front', color: 'offwhite', src: 'assets/prints/3-frente-john.png',    x: 50, y: 21, w: 34 },
+    { side: 'back',  color: 'preta',    src: 'assets/prints/4-costas-michael.png', x: 50, y: 15, w: 46 }
   ];
+  var BLANK = { src: '', x: 50, y: 20, w: 0 };
   LOOKS.forEach(function (l) { var i = new Image(); i.src = l.src; }); // preload
 
   // ---------- products ----------
@@ -100,58 +101,15 @@
   chips('sizes', ['P', 'M', 'G', 'GG'], 'M');
   chips('colors', ['OFF WHITE', 'PRETO', 'CINZA'], 'OFF WHITE');
 
-  // ---------- build vault + shirt ----------
+  // ---------- vault + shirt ----------
   var $ = function (id) { return document.getElementById(id); };
   var story = $('story'), stage = story.querySelector('.stage');
-  var shirt = $('shirt'), wrap = $('shirtWrap'), shadow = $('shadow');
-  var vault = $('vault'), door = $('door'), wheel = $('wheel'), glow = $('glow'), rays = $('rays'), flashEl = $('flash');
-  var backdrop = $('backdrop'), intro = $('intro'), cap1 = $('cap1'), cap2 = $('cap2');
-  var frontImg = $('frontImg'), backImg = $('backImg'), frontShade = $('frontShade'), backShade = $('backShade');
-  var digitsBox = $('digits'), lock = $('lock');
-
-  var BODY = 'M70 14 L34 28 L6 82 L36 96 L50 72 L50 202 L150 202 L150 72 L164 96 L194 82 L166 28 L130 14 Q100 40 70 14 Z';
-  var slicesHtml = '';
-  for (var i = 0; i < 11; i++) {
-    slicesHtml += '<svg class="slice" viewBox="0 0 200 210" style="transform:translateZ(' + (-20 + i * 4) + 'px)"><path d="' + BODY + '"/></svg>';
-  }
-  $('slices').innerHTML = slicesHtml;
-  var slicePaths = Array.prototype.slice.call($('slices').querySelectorAll('path'));
-
-  var currentColor = null;
-  function setColor(name) {
-    if (name === currentColor) return;
-    currentColor = name;
-    var pal = PALETTES[name];
-    shirt.style.setProperty('--fab', pal.fab);
-    shirt.style.setProperty('--fab-hi', pal.hi);
-    shirt.style.setProperty('--seam', pal.seam);
-    slicePaths.forEach(function (p, i) { p.setAttribute('fill', pal.edge[i % 2]); });
-  }
-  function placePrint(img, look) {
-    if (img.dataset.src === look.src) return;
-    img.dataset.src = look.src;
-    img.src = look.src;
-    img.style.width = look.w + '%';
-    img.style.left = (look.x - look.w / 2) + '%';
-    img.style.top = look.y + '%';
-  }
-
-  var bolts = [];
-  for (var a = 0; a < 360; a += 45) {
-    var b = document.createElement('div');
-    b.className = 'bolt';
-    b.dataset.angle = a;
-    $('bolts').appendChild(b);
-    bolts.push(b);
-  }
-
-  var digits = CODE.map(function () {
-    var d = document.createElement('span');
-    d.className = 'digit';
-    d.textContent = '_';
-    digitsBox.appendChild(d);
-    return d;
-  });
+  var vbg = $('vbg'), vscene = $('vscene'), vdoor = $('vdoor'), vplate = $('vplate');
+  var vlight = $('vlight'), vrays = $('vrays'), vlabel = $('vlabel'), vshade = $('vshade');
+  var cells = Array.prototype.slice.call(document.querySelectorAll('.vcell'));
+  var intro = $('intro'), cap1 = $('cap1'), cap2 = $('cap2');
+  var glCanvas = $('shirtGL'), shadow = $('shadow');
+  var has3D = window.Shirt3D && window.Shirt3D.init(glCanvas);
 
   // ---------- math ----------
   function clamp(x) { return Math.min(1, Math.max(0, x)); }
@@ -161,94 +119,126 @@
 
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  // ---------- layout of the vault photo ----------
+  var IMG_W = 2752, IMG_H = 1536, VAULT_D = 1360 / IMG_W; // vault diameter as a share of photo width
+  var sceneW = 1200, sceneH = 670, stageW = 1, stageH = 1;
+  function layout() {
+    stageW = stage.clientWidth; stageH = stage.clientHeight;
+    var cover = Math.max(stageW, stageH * IMG_W / IMG_H);
+    var fit = Math.min(0.78 * stageH, 0.92 * stageW) / VAULT_D;
+    sceneW = Math.min(cover, fit);
+    sceneH = sceneW * IMG_H / IMG_W;
+    vscene.style.width = sceneW + 'px';
+    vscene.style.left = (stageW / 2 - sceneW / 2) + 'px';
+    vscene.style.top = (stageH * 0.52 - sceneH * 0.5013) + 'px';
+    vscene.style.setProperty('--dw', (sceneW * 0.41788) + 'px');
+    if (has3D) window.Shirt3D.resize(stageW, stageH);
+  }
+
   function render(p) {
-    var narrow = window.innerWidth < 760;
-    // timeline (p from 0 to 1 over the whole story):
-    //   0 – 0.2  vault: password → unlock → door opens → shirt comes out
-    //   0.4 look 1 (front, branca) · 0.6 look 2 (back, preta)
-    //   0.8 look 3 (front, off white) · 1.0 look 4 (back, preta)
-    var typed = [0.016, 0.032, 0.048, 0.064].filter(function (t) { return p >= t; }).length;
-    var accepted = p >= 0.072;
-    digits.forEach(function (d, i) {
-      d.textContent = i < typed ? CODE[i] : '_';
-      d.classList.toggle('on', i < typed);
+    var narrow = stageW < 760;
+    // timeline (p goes 0 → 1 over the whole story):
+    //   0    – 0.10  password 1-4-2-5 typed on the door's display
+    //   0.10 – 0.16  dial turns, door unlatches
+    //   0.16 – 0.23  door swings open, light pours out
+    //   0.21 – 0.31  camera flies into the vault
+    //   0.30 – 0.42  shirt arrives, then: 0.5 look 1 · 0.667 look 2 · 0.833 look 3 · 1 look 4
+    var typed = [0.025, 0.045, 0.065, 0.085].filter(function (t) { return p >= t; }).length;
+    var accepted = p >= 0.095;
+    cells.forEach(function (c, i) {
+      c.firstChild.textContent = i < typed ? CODE[i] : '';
+      c.classList.toggle('on', i < typed);
+      c.classList.toggle('ok', accepted);
     });
-    digitsBox.classList.toggle('ok', accepted);
-    lock.textContent = accepted ? 'LIBERADO' : (typed ? 'DIGITANDO' : 'TRAVADO');
-    lock.classList.toggle('ok', accepted);
+    vlabel.textContent = accepted ? 'LIBERADO' : (typed ? 'DIGITANDO' : 'TRAVADO');
+    vlabel.classList.toggle('ok', accepted);
 
-    var vaultOut = smooth(0.16, 0.208, p);
-    var unlock = smooth(0.08, 0.112, p);
-    var open = smooth(0.096, 0.144, p);
-    var emerge = ease(smooth(0.112, 0.192, p));
-    var flash = Math.max(0, 1 - Math.abs(p - 0.132) / 0.024);
+    var dial = ease(smooth(0.1, 0.155, p)) * 450;
+    var pop = smooth(0.15, 0.165, p);
+    var open = ease(smooth(0.165, 0.235, p));
+    var dive = smooth(0.205, 0.31, p);
+    var diveE = dive * dive * (1.6 - 0.6 * dive);
 
-    wheel.style.transform = 'rotate(' + (smooth(0.072, 0.112, p) * 540).toFixed(1) + 'deg)';
-    var boltX = lerp(560, 420, unlock).toFixed(1);
-    bolts.forEach(function (b) {
-      b.style.transform = 'translate(-50%,-50%) rotate(' + b.dataset.angle + 'deg) translateX(' + boltX + '%)';
-    });
-    door.style.transform = 'rotateY(' + (-112 * open).toFixed(2) + 'deg)';
-    door.style.boxShadow = (24 * open).toFixed(0) + 'px 0 50px rgba(0,0,0,' + (0.6 * open).toFixed(2) + ')';
-    glow.style.opacity = open.toFixed(3);
-    rays.style.opacity = (open * (1 - vaultOut)).toFixed(3);
-    rays.style.transform = 'rotate(' + (p * 200).toFixed(1) + 'deg)';
-    vault.style.transform = 'translate(-50%,-50%) scale(' + (1 + 1.2 * vaultOut).toFixed(3) + ')';
-    vault.style.opacity = (1 - vaultOut).toFixed(3);
-    flashEl.style.opacity = (flash * 0.9).toFixed(3);
-    backdrop.style.opacity = (1 - smooth(0.192, 0.256, p)).toFixed(3);
-    var introOut = smooth(0.056, 0.096, p);
+    vplate.style.transform = 'rotate(' + dial.toFixed(1) + 'deg)';
+    vdoor.style.transform = 'translateZ(' + (pop * 26).toFixed(1) + 'px) rotateY(' + (-108 * open).toFixed(2) + 'deg)';
+    vlight.style.opacity = (Math.max(pop * 0.35, open) * (1 - 0.85 * dive)).toFixed(3);
+    vrays.style.opacity = (open * (1 - dive)).toFixed(3);
+    vrays.style.transform = 'rotate(' + (p * 120).toFixed(1) + 'deg)';
+    var zoom = 1 + diveE * 11;
+    vscene.style.transform = 'scale(' + zoom.toFixed(3) + ')';
+    vbg.style.transform = 'scale(' + (1 + diveE * 0.6).toFixed(3) + ')';
+    var sceneOut = smooth(0.285, 0.33, p);
+    vscene.style.opacity = vbg.style.opacity = vshade.style.opacity = (1 - sceneOut).toFixed(3);
+    vscene.style.visibility = sceneOut >= 1 ? 'hidden' : 'visible';
+    vbg.style.visibility = vscene.style.visibility;
+
+    var introOut = smooth(0.012, 0.05, p);
     intro.style.opacity = (1 - introOut).toFixed(3);
-    intro.style.transform = 'translateY(' + (-30 * introOut).toFixed(1) + 'px)';
-    cap1.style.opacity = (smooth(0.068, 0.08, p) * (1 - smooth(0.104, 0.116, p))).toFixed(3);
-    cap2.style.opacity = (smooth(0.128, 0.144, p) * (1 - smooth(0.176, 0.192, p))).toFixed(3);
+    intro.style.transform = 'translateY(' + (-24 * introOut).toFixed(1) + 'px)';
+    cap1.style.opacity = (smooth(0.095, 0.11, p) * (1 - smooth(0.15, 0.165, p))).toFixed(3);
+    cap2.style.opacity = (smooth(0.2, 0.215, p) * (1 - smooth(0.27, 0.29, p))).toFixed(3);
 
-    // shirt path: [p, left %, rotateY deg] keyframes; holds where it rests
-    var X = narrow ? [50, 50, 50, 50, 50] : [50, 64, 30, 68, 30];
+    // ---- shirt path: [p, left %, turn in degrees] (holds where a look rests)
+    var X = narrow ? [50, 50, 50, 50, 50] : [50, 64, 31, 67, 31];
     var K = [
-      [0.192, X[0], 0],
-      [0.34, X[1], 0], [0.44, X[1], 0],      // look 1 · front
-      [0.58, X[2], 180], [0.64, X[2], 180],  // look 2 · back
-      [0.78, X[3], 360], [0.84, X[3], 360],  // look 3 · front
-      [0.98, X[4], 540]                      // look 4 · back
+      [0.33, X[0], 0],
+      [0.42, X[1], 0], [0.52, X[1], 0],      // look 1 · front
+      [0.61, X[2], 180], [0.69, X[2], 180],  // look 2 · back
+      [0.78, X[3], 360], [0.86, X[3], 360],  // look 3 · front
+      [0.96, X[4], 540]                      // look 4 · back
     ];
-    var restTop = narrow ? 34 : 52, vTop = narrow ? 45 : 50;
-    var left, top = restTop, ry, tilt = 0;
-    if (p < K[0][0]) { left = X[0]; top = vTop; ry = lerp(-540, 0, emerge); }
+    var restTop = narrow ? 36 : 52;
+    var arrive = ease(smooth(0.29, 0.33, p));
+    var left = X[0], top = 50, ry, tilt = 0, sway = 0;
+    if (p < K[0][0]) { ry = lerp(-360, 0, arrive); }
     else {
-      left = K[K.length - 1][1]; ry = K[K.length - 1][2];
+      left = K[K.length - 1][1]; ry = K[K.length - 1][2]; top = restTop;
       for (var k = 0; k < K.length - 1; k++) {
         if (p < K[k + 1][0]) {
           var t = ease((p - K[k][0]) / (K[k + 1][0] - K[k][0]));
           left = lerp(K[k][1], K[k + 1][1], t);
           ry = lerp(K[k][2], K[k + 1][2], t);
-          if (k === 0) top = lerp(vTop, restTop, t);
-          tilt = Math.sin(t * Math.PI) * (K[k + 1][1] < K[k][1] ? -5 : 5);
+          top = k === 0 ? lerp(50, restTop, t) : restTop;
+          var dir = K[k + 1][1] < K[k][1] ? -1 : 1;
+          tilt = Math.sin(t * Math.PI) * 6 * dir;
+          sway = Math.sin(t * Math.PI) * 0.1;
           break;
         }
       }
     }
-    var z = lerp(-1300, 0, emerge);
-    var rad = ry * Math.PI / 180;
 
-    // which look is showing: switch colour while the shirt is edge-on (90°, 270°, 450°)
+    // which look is showing: colour switches while the shirt is edge-on (90°, 270°, 450°)
     var r = Math.max(0, ry);
     var look = r < 90 ? 0 : r < 270 ? 1 : r < 450 ? 2 : 3;
-    setColor(LOOKS[look].color);
-    placePrint(frontImg, LOOKS[r < 180 ? 0 : 2]);
-    placePrint(backImg, LOOKS[r < 360 ? 1 : 3]);
+    var pal = PALETTES[LOOKS[look].color];
 
-    wrap.style.opacity = smooth(0.104, 0.128, p).toFixed(3);
-    shirt.style.left = left.toFixed(2) + '%';
-    shirt.style.top = top.toFixed(2) + '%';
-    shirt.style.transform = 'translate(-50%,-50%) translateZ(' + z.toFixed(1) + 'px) rotateX(6deg) rotateY(' + ry.toFixed(2) + 'deg) rotateZ(' + tilt.toFixed(2) + 'deg)';
-    shadow.style.left = left.toFixed(2) + '%';
-    shadow.style.top = 'calc(' + top.toFixed(2) + '% + clamp(130px, 15vw, 215px))';
-    shadow.style.opacity = smooth(0.24, 0.32, p).toFixed(3);
-    shadow.style.transform = 'translateX(-50%) scaleX(' + (0.55 + 0.45 * Math.abs(Math.cos(rad))).toFixed(3) + ')';
-
-    frontShade.setAttribute('fill-opacity', Math.min(0.6, (1 - Math.cos(rad)) * 0.3).toFixed(3));
-    backShade.setAttribute('fill-opacity', Math.min(0.6, (1 + Math.cos(rad)) * 0.3).toFixed(3));
+    var shirtOn = smooth(0.29, 0.32, p);
+    glCanvas.style.opacity = shirtOn.toFixed(3);
+    if (has3D && shirtOn > 0) {
+      // while it arrives spinning, the back stays plain so the first look reads clean
+      var backLook = p < K[0][0] ? BLANK : LOOKS[r < 360 ? 1 : 3];
+      window.Shirt3D.setLook(LOOKS[r < 180 ? 0 : 2], backLook, pal);
+      var VH = window.Shirt3D.VIEW_H, VW = VH * stageW / stageH;
+      var s = Math.min(VH * (narrow ? 0.27 : 0.31), VW * 0.4);
+      window.Shirt3D.draw({
+        x: (left / 100 - 0.5) * VW,
+        y: -(top / 100 - 0.5) * VH,
+        z: lerp(-26, 0, arrive),
+        rx: 0.08 + sway * 0.4,
+        ry: ry * Math.PI / 180,
+        rz: tilt * Math.PI / 180,
+        s: s
+      });
+      // floor shadow under the shirt
+      var px = left / 100 * stageW, py = (top / 100) * stageH + s / VH * stageH * 1.18;
+      var sw = s / VH * stageH * 1.5 * (0.55 + 0.45 * Math.abs(Math.cos(ry * Math.PI / 180)));
+      shadow.style.width = sw.toFixed(0) + 'px';
+      shadow.style.transform = 'translate(' + (px - sw / 2).toFixed(1) + 'px,' + (py - 15).toFixed(1) + 'px)';
+      shadow.style.left = shadow.style.top = '0';
+      shadow.style.opacity = (smooth(0.36, 0.44, p) * 0.9).toFixed(3);
+    } else {
+      shadow.style.opacity = '0';
+    }
   }
 
   // ---------- scroll loop ----------
@@ -258,19 +248,20 @@
     var span = Math.max(1, r.height - stage.offsetHeight);
     return clamp(-r.top / span);
   }
-  function update() {
+  function update(force) {
     ticking = false;
     var p = progress();
-    if (reduced) p = p < 0.05 ? 0 : Math.max(p, 0.24); // skip the vault animation
-    if (Math.abs(p - last) < 0.0005) return;
+    if (reduced) p = p < 0.02 ? 0 : Math.max(p, 0.33); // skip the vault animation
+    if (!force && Math.abs(p - last) < 0.0003) return;
     last = p;
     render(p);
   }
   function onScroll() {
-    if (!ticking) { ticking = true; requestAnimationFrame(update); }
+    if (!ticking) { ticking = true; requestAnimationFrame(function () { update(false); }); }
   }
+  if (has3D) window.Shirt3D.onChange = function () { update(true); };
   window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', function () { last = -1; onScroll(); });
-  render(0);
-  update();
+  window.addEventListener('resize', function () { layout(); update(true); });
+  layout();
+  update(true);
 })();

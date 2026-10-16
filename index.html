@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;500;700&family=Rubik+Spray+Paint&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=3">
+<link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
 
@@ -46,70 +46,50 @@
 
   <!-- sticky stage -->
   <div class="stage" aria-hidden="true">
-    <div class="backdrop" id="backdrop">
-      <div class="backdrop-tag">A BANCA</div>
-      <div class="intro" id="intro">
-        <div class="intro-left">
-          <span class="label">[ COFRE Nº 01 · ACESSO RESTRITO ]</span>
-          <span class="intro-title">Entre<br>na Banca</span>
-        </div>
-        <span class="intro-hint">ROLE PRA DIGITAR<br>A SENHA ↓</span>
-      </div>
-    </div>
 
-    <div class="vault" id="vault">
-      <div class="vault-frame"></div>
-      <div class="vault-inside"></div>
-      <div class="vault-glow" id="glow"></div>
-      <div class="vault-rays" id="rays"></div>
-      <div class="vault-door" id="door">
-        <div class="door-steel"></div>
-        <div class="door-ring r1"></div>
-        <div class="door-ring r2"></div>
-        <div id="bolts"></div>
-        <div class="keypad">
-          <div class="digits" id="digits"></div>
-          <span class="lock" id="lock">TRAVADO</span>
-        </div>
-        <div class="wheel" id="wheel">
-          <div class="spoke"></div>
-          <div class="spoke" style="transform: rotate(60deg)"></div>
-          <div class="spoke" style="transform: rotate(120deg)"></div>
-          <div class="hub"></div>
-          <div class="hub-core"></div>
+    <!-- vault scene (photo split into layers: wall, door, dial plate) -->
+    <div class="vbg" id="vbg"></div>
+    <div class="vscene" id="vscene">
+      <img class="vwall" src="assets/vault/wall.jpg" alt="" decoding="async">
+      <div class="vhole" id="vhole">
+        <div class="vhole-depth"></div>
+        <div class="vhole-light" id="vlight"></div>
+        <div class="vhole-rays" id="vrays"></div>
+      </div>
+      <div class="vdoor-box">
+        <div class="vdoor" id="vdoor">
+          <div class="vdoor-edge" style="transform: translateZ(-8px)"></div>
+          <div class="vdoor-edge" style="transform: translateZ(-16px)"></div>
+          <div class="vdoor-edge" style="transform: translateZ(-24px)"></div>
+          <div class="vdoor-edge" style="transform: translateZ(-32px)"></div>
+          <div class="vdoor-back"></div>
+          <div class="vdoor-front">
+            <img class="vdoor-img" src="assets/vault/door.webp" alt="" decoding="async">
+            <img class="vplate" id="vplate" src="assets/vault/plate.webp" alt="" decoding="async">
+            <span class="vcell" style="left:37.48%"><b></b></span>
+            <span class="vcell" style="left:43.91%"><b></b></span>
+            <span class="vcell" style="left:50.35%"><b></b></span>
+            <span class="vcell" style="left:56.78%"><b></b></span>
+            <span class="vlabel" id="vlabel">TRAVADO</span>
+          </div>
         </div>
       </div>
     </div>
-    <div class="flash" id="flash"></div>
+    <div class="vshade" id="vshade"></div>
+
+    <div class="intro" id="intro">
+      <div class="intro-left">
+        <span class="label">[ COFRE Nº 01 · ACESSO RESTRITO ]</span>
+        <span class="intro-title">Entre<br>na Banca</span>
+      </div>
+      <span class="intro-hint">ROLE PRA DIGITAR<br>A SENHA <i class="scroll-cue"></i></span>
+    </div>
     <div class="caption" id="cap1">[ SENHA ACEITA ] · DESTRAVANDO…</div>
-    <div class="caption" id="cap2">[ DROP LIBERADO ]</div>
+    <div class="caption" id="cap2">[ ENTRANDO NO COFRE ]</div>
 
-    <!-- the 3D shirt -->
+    <!-- 3D shirt -->
     <div class="shirt-shadow" id="shadow"></div>
-    <div class="shirt-wrap" id="shirtWrap">
-      <div class="shirt" id="shirt">
-        <div id="slices"></div>
-        <div class="face front">
-          <svg viewBox="0 0 200 210" class="fill">
-            <defs><linearGradient id="abFront" x1="0" y1="0" x2="1" y2="1"><stop offset="0" class="hi"/><stop offset="1" class="lo"/></linearGradient></defs>
-            <path class="body" d="M70 14 L34 28 L6 82 L36 96 L50 72 L50 202 L150 202 L150 72 L164 96 L194 82 L166 28 L130 14 Q100 40 70 14 Z" fill="url(#abFront)"/>
-            <path class="seam" d="M70 14 Q100 40 130 14 M76 17 Q100 34 124 17" fill="none" stroke-width="1.6"/>
-            <path class="seam" d="M50 72 L50 100 M150 72 L150 100" fill="none" stroke-width="1"/>
-          </svg>
-          <img class="print-img" id="frontImg" alt="">
-          <svg viewBox="0 0 200 210" class="fill"><path id="frontShade" d="M70 14 L34 28 L6 82 L36 96 L50 72 L50 202 L150 202 L150 72 L164 96 L194 82 L166 28 L130 14 Q100 40 70 14 Z" fill="#000" fill-opacity="0"/></svg>
-        </div>
-        <div class="face back">
-          <svg viewBox="0 0 200 210" class="fill">
-            <defs><linearGradient id="abBack" x1="1" y1="0" x2="0" y2="1"><stop offset="0" class="hi"/><stop offset="1" class="lo"/></linearGradient></defs>
-            <path class="body" d="M70 14 L34 28 L6 82 L36 96 L50 72 L50 202 L150 202 L150 72 L164 96 L194 82 L166 28 L130 14 Q100 40 70 14 Z" fill="url(#abBack)"/>
-            <path class="seam" d="M70 14 Q100 22 130 14" fill="none" stroke-width="1.6"/>
-          </svg>
-          <img class="print-img" id="backImg" alt="">
-          <svg viewBox="0 0 200 210" class="fill"><path id="backShade" d="M70 14 L34 28 L6 82 L36 96 L50 72 L50 202 L150 202 L150 72 L164 96 L194 82 L166 28 L130 14 Q100 40 70 14 Z" fill="#000" fill-opacity="0"/></svg>
-        </div>
-      </div>
-    </div>
+    <canvas class="shirt-gl" id="shirtGL"></canvas>
   </div>
 
   <!-- scroll room for the vault -->
@@ -297,6 +277,7 @@
   </footer>
 </main>
 
-<script src="main.js?v=3"></script>
+<script src="shirt3d.js?v=4"></script>
+<script src="main.js?v=4"></script>
 </body>
 </html>

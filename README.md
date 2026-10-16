@@ -4,10 +4,12 @@ Nova home da [A Banca Store](https://www.abancastore.com.br): site estático (HT
 
 ## A animação de topo
 
-1. A página abre num cofre fechado ("ENTRE NA BANCA").
-2. Rolando, a senha **1425** (número da loja no Maxi Shopping) é digitada no visor.
-3. "LIBERADO": a roda gira, as travas recuam e a porta abre com luz.
-4. A camiseta 3D sai girando de dentro do cofre e, a cada rolada, vira 180° e troca de peça
+1. A página abre no cofre na parede grafitada ("ENTRE NA BANCA"). A foto é dividida em camadas
+   (`assets/vault/`: parede, porta e roda), então cada parte se mexe de verdade.
+2. Rolando, a senha **1425** (número da loja no Maxi Shopping) aparece no visor da porta.
+3. "LIBERADO": a roda gira, a porta destrava, abre na dobradiça e a luz sai de dentro.
+4. A câmera entra no cofre e o site aparece lá dentro.
+5. A camiseta 3D (WebGL puro, `shirt3d.js`, sem bibliotecas) chega girando e, a cada rolada, vira 180° e troca de peça
    (a cor e a estampa mudam no instante em que ela fica de perfil):
    - **01 · A Banca Club®** — frente, branca;
    - **02 · Rosas do Club** — costas, preta;
@@ -39,6 +41,7 @@ Settings → Pages → *Deploy from a branch* → `main` / `(root)`.
 | Cores do tecido | `main.js` → `PALETTES` |
 | Senha do cofre | `main.js` → `CODE` |
 | Tempos da animação | `main.js` → `render()` (valores de 0 a 1 = início/fim do trecho) |
+| Forma, volume e luz da camiseta | `shirt3d.js` (`SHAPE`, `buildHeights`, shader `FS`) |
 | Cores e fontes | `style.css` → `:root` |
 
 ## Pendências
@@ -48,4 +51,3 @@ Settings → Pages → *Deploy from a branch* → `main` / `(root)`.
 - Fotos reais dos produtos (hoje são silhuetas com "[ FOTO ]").
 - E-mail de contato (`[SEU E-MAIL DE CONTATO]`) e preço da peça das costas (`[PREÇO]`).
 - Links dos produtos e do carrinho apontam pra `#`; ligar na loja (Nuvemshop) ou no checkout.
-- A camiseta 3D é feita em camadas CSS. Com um modelo `.glb` da peça real dá pra trocar por Three.js mantendo o mesmo movimento.
