@@ -67,13 +67,10 @@ img { max-width: 100%; display: block; }
 .box.is-code::before { color: var(--amber); }
 .room-floor { position: absolute; left: 0; right: 0; top: var(--floor); bottom: 0; background: linear-gradient(180deg, #1C1D20 0%, #121315 100%); box-shadow: 0 -1px 0 rgba(255,255,255,0.08); }
 .room-refl { position: absolute; inset: 0; width: 100%; height: 100%; }
-.room-spot { position: absolute; top: 0; bottom: 0; left: -50%; width: 100%; will-change: transform; background:
-    radial-gradient(ellipse 24% 52% at 50% 34%, rgba(255,218,160,0.22), rgba(255,218,160,0.06) 55%, rgba(255,218,160,0) 75%),
-    radial-gradient(ellipse 22% 6% at 50% var(--floor), rgba(255,214,150,0.2), rgba(255,214,150,0) 70%),
-    radial-gradient(ellipse 70% 80% at 50% 45%, rgba(10,10,12,0) 22%, rgba(10,10,12,0.88) 100%); }
-.room-spot::before, .room-spot::after { content: ""; position: absolute; top: 0; bottom: 0; width: 100%; background: rgba(10,10,12,0.88); }
-.room-spot::before { right: 100%; }
-.room-spot::after { left: 100%; }
+.room-spot { position: absolute; top: 0; bottom: 0; left: -150%; width: 300%; will-change: transform; background:
+    radial-gradient(ellipse 8% 52% at 50% 34%, rgba(255,218,160,0.22), rgba(255,218,160,0.06) 55%, rgba(255,218,160,0) 75%),
+    radial-gradient(ellipse 7.5% 6% at 50% var(--floor), rgba(255,214,150,0.2), rgba(255,214,150,0) 70%),
+    radial-gradient(ellipse 30% 85% at 50% 45%, rgba(10,10,12,0) 22%, rgba(10,10,12,0.55) 70%, rgba(10,10,12,0.8) 100%); }
 
 
 /* vault on the street wall */
