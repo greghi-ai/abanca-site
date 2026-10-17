@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=14">
+<link rel="stylesheet" href="style.css?v=17">
 </head>
 <body>
 
@@ -38,12 +38,10 @@
 
   <div class="stage" aria-hidden="true">
 
-    <!-- inside the vault: wall of deposit boxes, spotlight, floor -->
+    <!-- inside the vault (photo) -->
     <div class="room" id="room">
-      <div class="lockers" id="lockers"></div>
-      <div class="room-floor"></div>
-      <canvas class="room-refl" id="refl"></canvas>
-      <div class="room-spot" id="spot"></div>
+      <img class="room-bg" id="roomBg" src="assets/vault/room.jpg" alt="" decoding="async">
+      <div class="room-dust"></div>
     </div>
 
     <!-- the vault on the street wall (photo split into layers) -->
@@ -82,9 +80,22 @@
     </div>
     <p class="caption" id="cap1">Senha aceita</p>
 
-    <!-- 3D shirt -->
-    <div class="shirt-shadow" id="shadow"></div>
-    <canvas class="shirt-gl" id="shirtGL"></canvas>
+    <!-- the shirt: two photo faces on a card that turns -->
+    <div class="tees" id="tees">
+      <div class="tee-shadow" id="shadow"></div>
+      <div class="tee" id="tee">
+        <div class="tee-card" id="teeCard">
+          <div class="tee-face front"><img id="teeFront" alt="" decoding="async"><i class="tee-light" id="teeFrontLight"></i></div>
+          <div class="tee-face back"><img id="teeBack" alt="" decoding="async"><i class="tee-light" id="teeBackLight"></i></div>
+        </div>
+      </div>
+      <div class="tee tee-refl" id="teeRefl" aria-hidden="true">
+        <div class="tee-card" id="reflCard">
+          <div class="tee-face front"><img id="reflFront" alt=""></div>
+          <div class="tee-face back"><img id="reflBack" alt=""></div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- the 4 looks (shown one at a time over the stage) -->
@@ -227,13 +238,13 @@
       <span class="offer-kicker">Básicas e regatas</span>
       <span class="offer-big">a partir de<br><b>R$ 104,49</b></span>
       <span class="offer-note">no Pix</span>
-      <span class="offer-shirt" data-offer-shirt="#1E1C1B"></span>
+      <span class="offer-shirt" data-offer-shirt="B"></span>
     </a>
     <a href="#" class="offer offer-red">
       <span class="offer-kicker">Kit 3 camisetas</span>
       <span class="offer-big">monte o seu<br><b>R$ 259,90</b></span>
       <span class="offer-note">em até 4x sem juros</span>
-      <span class="offer-shirt" data-offer-shirt="#E2DBCD"></span>
+      <span class="offer-shirt" data-offer-shirt="O"></span>
     </a>
     <a href="#" class="offer offer-light">
       <span class="offer-kicker">Calças baggy</span>
@@ -273,7 +284,6 @@
   </footer>
 </main>
 
-<script src="shirt3d.js?v=14"></script>
-<script src="main.js?v=14"></script>
+<script src="main.js?v=17"></script>
 </body>
 </html>

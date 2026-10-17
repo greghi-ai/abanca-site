@@ -9,7 +9,7 @@ Nova home da [A Banca Store](https://www.abancastore.com.br): site estático (HT
 2. Rolando, a senha **1425** (número da loja no Maxi Shopping) aparece no visor da porta.
 3. "LIBERADO": a roda gira, a porta destrava, abre na dobradiça e a luz sai de dentro.
 4. A câmera entra no cofre e o site aparece lá dentro.
-5. A camiseta 3D (WebGL puro, `shirt3d.js`, sem bibliotecas — tronco, mangas caídas, gola canelada, barra e dobras modelados no código) chega girando e, a cada rolada, vira 180° e troca de peça
+5. Dentro do cofre (`assets/vault/room.jpg`), a camiseta — fotos reais das peças em `assets/tees/` — chega flutuando e, a cada rolada, vira 180° e troca de peça
    (a cor e a estampa mudam no instante em que ela fica de perfil):
    - **01 · A Banca Club®** — frente, branca;
    - **02 · Rosas do Club** — costas, preta;
@@ -36,18 +36,17 @@ Settings → Pages → *Deploy from a branch* → `main` / `(root)`.
 | O quê | Onde |
 |---|---|
 | Produtos, preços e cores | `main.js` → `PRODUCTS` |
-| Foto de um produto | 9º item da linha em `PRODUCTS` (ex.: `'img/culture-basic-azul.jpg'`) |
-| Estampas, cores e posição na camiseta 3D | `main.js` → `LOOKS` (arquivos em `assets/prints/`) |
-| Cores do tecido | `main.js` → `PALETTES` |
+| Foto de um produto | campo `img` do produto em `PRODUCTS` |
+| Fotos das 4 peças do cofre | `main.js` → `LOOKS` (arquivos em `assets/tees/look-*.webp`, PNG/WebP com fundo transparente) |
+| Fotos das camisetas lisas da loja | `assets/tees/tee-*.webp` |
 | Senha do cofre | `main.js` → `CODE` |
 | Tempos da animação | `main.js` → `render()` (valores de 0 a 1 = início/fim do trecho) |
-| Forma, volume e luz da camiseta | `shirt3d.js` (`SHAPE`, `buildHeights`, shader `FS`) |
 | Cores e fontes | `style.css` → `:root` |
 
 ## Pendências
 
-- **Estampas provisórias**: os PNGs em `assets/prints/` foram recortados de prints da loja. Trocar pelos arquivos originais de estampa (PNG com fundo transparente, 2000 px+), mantendo os mesmos nomes.
+- **Fotos provisórias**: as camisetas em `assets/tees/` foram recortadas de prints da loja. Trocar por fotos de produto com fundo transparente (1800 px+), mantendo os mesmos nomes.
 - Preços das 4 peças do scroll (`[PREÇO]`).
-- Fotos reais dos produtos (hoje são silhuetas com "[ FOTO ]").
+- Fotos das calças, conjuntos e regatas (hoje são blocos de cor com "Foto em breve").
 - E-mail de contato (`[SEU E-MAIL DE CONTATO]`) e preço da peça das costas (`[PREÇO]`).
 - Links dos produtos e do carrinho apontam pra `#`; ligar na loja (Nuvemshop) ou no checkout.
