@@ -4,19 +4,26 @@ Nova home da [A Banca Store](https://www.abancastore.com.br): site estático (HT
 
 ## A animação de topo
 
-1. A página abre no cofre na parede grafitada ("ENTRE NA BANCA"). A foto é dividida em camadas
-   (`assets/vault/`: parede, porta e roda), então cada parte se mexe de verdade.
-2. Rolando, a senha **1425** (número da loja no Maxi Shopping) aparece no visor da porta.
-3. "LIBERADO": a roda gira, a porta destrava, abre na dobradiça e a luz sai de dentro.
-4. A câmera entra no cofre e o site aparece lá dentro.
-5. Dentro do cofre (`assets/vault/room.jpg`), a camiseta — fotos reais das peças em `assets/tees/` — chega flutuando e, a cada rolada, vira 180° e troca de peça
-   (a cor e a estampa mudam no instante em que ela fica de perfil):
+1. A página abre no cofre na parede grafitada ("ENTRE NA BANCA").
+2. A abertura é um **filme** (`assets/vault-film/`) que anda junto com a rolagem: 99 quadros
+   tirados do vídeo, em versão computador (`d/`) e celular (`m/`), carregados do mais grosso
+   pro mais fino, então o scroll funciona antes de tudo baixar.
+3. Nos primeiros quadros (porta parada), a senha **1425** é digitada por cima do visor da porta
+   e ele vira "LIBERADO". Depois a roda gira, a porta abre e a câmera entra na sala do cofre.
+4. Dentro do cofre (último quadro, `room.webp`), a camiseta — fotos reais das peças em
+   `assets/tees/` — chega flutuando e, a cada rolada, vira 180° e troca de peça:
    - **01 · A Banca Club®** — frente, branca;
    - **02 · Rosas do Club** — costas, preta;
    - **03 · We Love (1 João 4:19)** — frente, off white;
    - **04 · Michael** — costas, preta.
 
-Tudo isso acontece em ~1,7 tela de rolagem (uns 10 a 19 cliques de rodinha); o movimento é suavizado entre um clique e outro.
+Tudo isso acontece em ~1,7 tela de rolagem; o movimento é suavizado entre um clique e outro.
+
+### Trocar o vídeo
+
+Gere os quadros de novo com o ffmpeg e mantenha os nomes `000.webp`…`098.webp`. Se o visor da
+porta mudar de lugar no vídeo novo, ajuste `CELLS`, `CELL_Y` e `LABEL` em `main.js` (posições em
+pixels do vídeo 1928×1076) e `FLOOR` (centro da luz no chão do último quadro).
 
 ## Rodar localmente
 
@@ -40,7 +47,7 @@ Settings → Pages → *Deploy from a branch* → `main` / `(root)`.
 | Fotos das 4 peças do cofre | `main.js` → `LOOKS` (arquivos em `assets/tees/look-*.webp`, PNG/WebP com fundo transparente) |
 | Fotos das camisetas lisas da loja | `assets/tees/tee-*.webp` |
 | Senha do cofre | `main.js` → `CODE` |
-| Tempos da animação | `main.js` → `render()` (valores de 0 a 1 = início/fim do trecho) |
+| Tempos da animação | `main.js` → `T` (valores de 0 a 1 = início/fim de cada trecho; `T.film` liga rolagem ↔ quadro do vídeo) |
 | Cores e fontes | `style.css` → `:root` |
 
 ## Pendências

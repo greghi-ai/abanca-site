@@ -57,38 +57,9 @@ img { max-width: 100%; display: block; }
 .stage { position: sticky; top: 0; height: var(--stage); margin-bottom: calc(-1 * var(--stage)); z-index: 1; pointer-events: none; overflow: hidden; }
 .track { height: calc(var(--stage) * 2.7); }
 
-/* inside the vault (photo) */
-.room { position: absolute; inset: 0; opacity: 0; background: #0b0b0c; overflow: hidden; }
-.room-bg { position: absolute; left: 0; top: 0; max-width: none; transform-origin: 0 0; will-change: transform; }
-.room-dust { position: absolute; inset: 0; background: radial-gradient(ellipse 60% 70% at 50% 45%, rgba(10,10,12,0) 40%, rgba(10,10,12,0.55) 100%); }
-
-/* vault on the street wall */
-.vbg { position: absolute; inset: -40px; background: #15110e url("assets/vault/wall-blur.jpg") center / cover no-repeat; transform-origin: 50% 52%; will-change: transform; }
-.vscene { position: absolute; left: 0; top: 0; width: 1200px; aspect-ratio: 2752 / 1536; transform-origin: 50% 50.13%; will-change: transform; perspective: 2400px; }
-.vwall { position: absolute; inset: 0; width: 100%; height: 100%;
-  -webkit-mask-image: radial-gradient(ellipse 58% 62% at 50% 50%, #000 62%, transparent 100%);
-          mask-image: radial-gradient(ellipse 58% 62% at 50% 50%, #000 62%, transparent 100%); }
-.vhole, .vdoor-box { position: absolute; left: 29.106%; top: 12.695%; width: 41.788%; height: 74.870%; }
-.vhole { border-radius: 50%; overflow: hidden; background: #070708; box-shadow: inset 0 0 0 6px #0b0908; }
-.vhole-room { position: absolute; left: 50%; top: 50%; height: 118%; width: auto; max-width: none; transform: translate(-50%, -47%); filter: brightness(0.35); will-change: filter; }
-.vhole-depth { position: absolute; inset: 0; border-radius: 50%; box-shadow: inset 0 0 0 3px rgba(0,0,0,0.6), inset 0 18px 50px rgba(0,0,0,0.85), inset 0 0 90px rgba(0,0,0,0.7); }
-.vhole-light { position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 50% 30%, rgba(255,206,150,0.22), rgba(255,180,110,0) 60%); opacity: 0; }
-.vdoor-box { transform-style: preserve-3d; }
-.vdoor { position: absolute; inset: 0; transform-origin: 1% 50%; transform-style: preserve-3d; will-change: transform; }
-.vdoor-front, .vdoor-back, .vdoor-edge { position: absolute; inset: 0; border-radius: 50%; }
-.vdoor-front { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
-.vdoor-img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; }
-.vplate { position: absolute; left: 25.217%; top: 25.217%; width: 49.565%; height: 49.565%; max-width: none; will-change: transform; }
-.vdoor-edge { background: radial-gradient(circle, #3a3532 0%, #24201d 70%, #151210 100%); box-shadow: inset 0 0 0 4px #0e0c0a; }
-.vdoor-back { transform: translateZ(-40px) rotateY(180deg); background: radial-gradient(circle at 60% 40%, rgba(0,0,0,0.25), rgba(0,0,0,0.75) 75%), url("assets/vault/door.webp") center / cover; box-shadow: inset 0 0 0 10px #1d1a18, inset 0 0 60px rgba(0,0,0,0.7); backface-visibility: hidden; -webkit-backface-visibility: hidden; }
-.vcell { position: absolute; top: 11.91%; width: 5.22%; height: 6.61%; background: linear-gradient(180deg, #3b3431, #443b38 60%, #3e3532); box-shadow: inset 0 2px 4px rgba(0,0,0,0.55), inset 0 0 0 1px rgba(0,0,0,0.35); display: flex; align-items: center; justify-content: center; }
-.vcell b { font: 700 calc(var(--dw, 500px) * 0.044) / 1 var(--text); font-variant-numeric: tabular-nums; color: #827167; }
-.vcell b:empty::after { content: ""; display: block; width: calc(var(--dw, 500px) * 0.022); height: calc(var(--dw, 500px) * 0.005); background: #827167; margin-top: calc(var(--dw, 500px) * 0.02); }
-.vcell.on b { color: #efe3d2; }
-.vcell.ok b { color: #ffc77a; text-shadow: 0 0 10px rgba(255,190,100,0.85), 0 0 22px rgba(255,170,80,0.5); }
-.vlabel { position: absolute; left: 41.5%; top: 19.4%; width: 17%; height: 3.2%; display: flex; align-items: center; justify-content: center; background: #37302c; font: 600 calc(var(--dw, 500px) * 0.017) / 1 var(--text); letter-spacing: 0.24em; color: #b29c89; }
-.vlabel.ok { color: #ffc77a; text-shadow: 0 0 8px rgba(255,190,100,0.7); }
-.vshade { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 52%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.6) 100%); }
+/* the vault opening film (canvas); first frame painted by CSS while the script loads */
+.film { position: absolute; inset: 0; width: 100%; height: 100%; display: block; background: #060607 url("assets/vault-film/d/000.webp") center / cover no-repeat; }
+@media (max-width: 759px) { .film { background-image: url("assets/vault-film/m/000.webp"); } }
 
 .intro { position: absolute; left: var(--gutter); right: var(--gutter); bottom: clamp(24px, 5vh, 56px); display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 32px; z-index: 2; }
 .intro p { margin: 0; text-shadow: 0 2px 30px rgba(0,0,0,0.7); }

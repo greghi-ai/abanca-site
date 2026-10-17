@@ -100,10 +100,7 @@
   // ---------- elements ----------
   var $ = function (id) { return document.getElementById(id); };
   var story = $('story'), stage = story.querySelector('.stage');
-  var room = $('room'), roomBg = $('roomBg');
-  var vbg = $('vbg'), vscene = $('vscene'), vdoor = $('vdoor'), vplate = $('vplate');
-  var vlight = $('vlight'), vroom = $('vroom'), vlabel = $('vlabel'), vshade = $('vshade');
-  var cells = Array.prototype.slice.call(document.querySelectorAll('.vcell'));
+  var film = $('film'), fctx = film.getContext('2d');
   var intro = $('intro'), cap1 = $('cap1');
   var tees = $('tees'), tee = $('tee'), teeCard = $('teeCard'), refl = $('teeRefl'), reflCard = $('reflCard'), shadow = $('shadow');
   var faces = { front: [$('teeFront'), $('reflFront')], back: [$('teeBack'), $('reflBack')] };
@@ -116,55 +113,146 @@
   function smooth(a, b, x) { var t = clamp((x - a) / (b - a)); return t * t * (3 - 2 * t); }
   function ease(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
 
-  // ---------- layout ----------
-  var IMG_W = 2752, IMG_H = 1536, VAULT_D = 1360 / IMG_W;   // street vault photo
-  var ROOM_W = 2752, ROOM_H = 1536, ROOM_FLOOR = 0.80;       // vault room photo: centre of the light pool on the floor
-  var stageW = 1, stageH = 1, narrow = false;
-  var teeW = 400, teeH = 362, floorY = 600, roomScale = 1, roomX = 0, roomY = 0, diveFill = 4;
+  // ---------- the film: vault opening, as an image sequence scrubbed by the scroll ----------
+  // 99 frames picked from the 217-frame video (every 4th while the door is still, every 2nd after).
+  var SRC = []; for (var f = 0; f < 40; f += 4) SRC.push(f); for (f = 40; f <= 216; f += 2) SRC.push(f);
+  var VW = 1928, VH = 1076;                // video size, used for positions
+  var FLOOR = { x: 0.48, y: 0.80 };        // centre of the light pool on the floor in the last frame
+  // the door's display in the first frames (video pixels): 4 cells and the label
+  var CELLS = [[864, 905], [916, 957], [968, 1008], [1019, 1060]], CELL_Y = [233, 288];
+  var LABEL = [904, 293, 1026, 320];
+  var frames = new Array(SRC.length), roomImg = null, setDir = 'd';
+  var dpr = 1, stageW = 1, stageH = 1, narrow = false;
+  var cover = { s: 1, x: 0, y: 0 };
 
-  function layout() {
-    stageW = stage.clientWidth; stageH = stage.clientHeight; narrow = stageW < 760;
-    // street vault
-    var cover = Math.max(stageW, stageH * IMG_W / IMG_H);
-    var fit = Math.min(0.78 * stageH, 0.92 * stageW) / VAULT_D;
-    var sceneW = Math.min(cover, fit), sceneH = sceneW * IMG_H / IMG_W;
-    vscene.style.width = sceneW + 'px';
-    vscene.style.left = (stageW / 2 - sceneW / 2) + 'px';
-    vscene.style.top = (stageH * 0.52 - sceneH * 0.5013) + 'px';
-    vscene.style.setProperty('--dw', (sceneW * 0.41788) + 'px');
-    diveFill = Math.hypot(stageW, stageH) / (sceneW * 0.41788) * 1.04;
-
-    // vault room photo: cover the stage; on phones lift the floor so the shirt sits above the text panel
-    roomScale = Math.max(stageW / ROOM_W, stageH / ROOM_H);
-    var rw = ROOM_W * roomScale, rh = ROOM_H * roomScale;
-    floorY = narrow ? stageH * 0.6 : stageH / 2 + (ROOM_FLOOR - 0.5) * rh;
-    roomX = (stageW - rw) / 2;
-    roomY = narrow ? floorY - ROOM_FLOOR * rh : (stageH - rh) / 2;
-    roomBg.style.width = ROOM_W + 'px';
-
-    // shirt size: tall enough to read the print, narrow enough to leave room for the text
-    teeH = narrow ? Math.min(stageH * 0.36, stageW * 0.8 * 815 / 900) : Math.min(stageH * 0.54, stageW * 0.34 * 815 / 900);
-    teeW = teeH * 900 / 815;
-    tee.style.width = refl.style.width = teeW + 'px';
-    shadow.style.width = (teeW * 0.86) + 'px';
+  function framePath(i) { return 'assets/vault-film/' + setDir + '/' + ('00' + i).slice(-3) + '.webp'; }
+  function loadFrame(i, cb) {
+    if (frames[i]) return;
+    var im = new Image();
+    im.decoding = 'async';
+    im.onload = function () { frames[i] = im; if (cb) cb(); };
+    im.src = framePath(i);
+  }
+  // load coarse to fine, so scrubbing works before everything has arrived
+  function loadAllFrames() {
+    var order = [], seen = {};
+    [16, 8, 4, 2, 1].forEach(function (step) {
+      for (var i = 0; i < SRC.length; i += step) if (!seen[i]) { seen[i] = 1; order.push(i); }
+    });
+    if (!seen[SRC.length - 1]) order.push(SRC.length - 1);
+    var k = 0, inFlight = 0;
+    (function pump() {
+      while (inFlight < 6 && k < order.length) {
+        inFlight++;
+        loadFrame(order[k++], function () { inFlight--; drawFilm(lastP, true); pump(); });
+      }
+    })();
+  }
+  function nearestLoaded(i) {
+    for (var d = 0; d < SRC.length; d++) {
+      if (frames[i - d]) return frames[i - d];
+      if (frames[i + d]) return frames[i + d];
+    }
+    return null;
   }
 
   // ---------- timeline (p goes 0 → 1 over ~1.7 screens of scrolling) ----------
   var T = {
-    digits: [0.02, 0.045, 0.07, 0.095], ok: 0.105,
-    dial: [0.12, 0.19], pop: [0.185, 0.2], open: [0.2, 0.28], dive: [0.25, 0.37], sceneOut: [0.345, 0.385],
-    arrive: [0.355, 0.44],
+    digits: [0.02, 0.045, 0.07, 0.095], ok: 0.105, digitsOut: [0.115, 0.13],
+    // p → video frame: hold the still door while the password is typed, then play the rest
+    film: [[0, 0], [0.13, 40], [0.40, 216]],
+    arrive: [0.37, 0.45],
     path: function (X) {                    // [p, x %, turn°]; flat stretches are where a look rests
       return [
-        [0.44, X[0], 0],
-        [0.47, X[1], 0], [0.53, X[1], 0],     // look 1 · front
-        [0.61, X[2], 180], [0.68, X[2], 180], // look 2 · back
-        [0.76, X[3], 360], [0.83, X[3], 360], // look 3 · front
-        [0.92, X[4], 540]                     // look 4 · back
+        [0.45, X[0], 0],
+        [0.48, X[1], 0], [0.54, X[1], 0],     // look 1 · front
+        [0.62, X[2], 180], [0.69, X[2], 180], // look 2 · back
+        [0.77, X[3], 360], [0.84, X[3], 360], // look 3 · front
+        [0.93, X[4], 540]                     // look 4 · back
       ];
     },
-    rests: [[0.46, 0.555], [0.6, 0.705], [0.75, 0.855], [0.905, 1.01]]
+    rests: [[0.47, 0.565], [0.61, 0.715], [0.76, 0.865], [0.915, 1.01]]
   };
+  function videoFrameAt(p) {
+    var F = T.film;
+    for (var k = 0; k < F.length - 1; k++) {
+      if (p <= F[k + 1][0]) return lerp(F[k][1], F[k + 1][1], clamp((p - F[k][0]) / (F[k + 1][0] - F[k][0])));
+    }
+    return F[F.length - 1][1];
+  }
+
+  // ---------- layout ----------
+  var teeW = 400, teeH = 362, floorY = 600, lift = 0;
+  function layout() {
+    stageW = stage.clientWidth; stageH = stage.clientHeight; narrow = stageW < 760;
+    var want = narrow ? 'm' : 'd';
+    if (want !== setDir) { setDir = want; frames = new Array(SRC.length); loadFrame(0, function () { drawFilm(lastP, true); }); }
+    dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    film.width = Math.round(stageW * dpr); film.height = Math.round(stageH * dpr);
+    // cover the stage with the 16:9 film
+    cover.s = Math.max(stageW / VW, stageH / VH);
+    cover.x = (stageW - VW * cover.s) / 2;
+    cover.y = (stageH - VH * cover.s) / 2;
+    // on phones the room is lifted once the shirts arrive, so the shirt stands above the text panel
+    lift = narrow ? Math.max(0, (cover.y + FLOOR.y * VH * cover.s) - stageH * 0.6) : 0;
+    teeH = narrow ? Math.min(stageH * 0.36, stageW * 0.8 * 815 / 900) : Math.min(stageH * 0.54, stageW * 0.34 * 815 / 900);
+    teeW = teeH * 900 / 815;
+    tee.style.width = refl.style.width = teeW + 'px';
+    shadow.style.width = (teeW * 0.86) + 'px';
+    lastKey = '';
+  }
+
+  var lastKey = '', lastP = 0;
+  function drawFilm(p, force) {
+    lastP = p;
+    var vf = videoFrameAt(p);
+    // nearest picked frame for this video frame
+    var i = 0; while (i < SRC.length - 1 && SRC[i + 1] <= vf + 0.5) i++;
+    var atEnd = vf >= 216 && roomImg;
+    var up = lift * ease(smooth(T.arrive[0], T.arrive[1], p));
+    var typed = T.digits.filter(function (t) { return p >= t; }).length;
+    var accepted = p >= T.ok;
+    var dOut = smooth(T.digitsOut[0], T.digitsOut[1], p);
+    var key = (atEnd ? 'room' : i) + '|' + up.toFixed(1) + '|' + typed + accepted + dOut.toFixed(2);
+    if (!force && key === lastKey) return;
+    var img = atEnd ? roomImg : (frames[i] || nearestLoaded(i));
+    if (!img) return;
+    lastKey = key;
+    var c = fctx;
+    c.setTransform(dpr, 0, 0, dpr, 0, 0);
+    c.fillStyle = '#060607'; c.fillRect(0, 0, stageW, stageH);
+    c.setTransform(dpr * cover.s, 0, 0, dpr * cover.s, dpr * cover.x, dpr * (cover.y - up));
+    c.drawImage(img, 0, 0, VW, VH);
+
+    // the password, typed on the door's own display while the door is still
+    if (vf <= 44 && dOut < 1) {
+      c.globalAlpha = 1 - dOut;
+      var cellH = CELL_Y[1] - CELL_Y[0];
+      for (var n = 0; n < 4; n++) {
+        if (n >= typed) continue;
+        var x0 = CELLS[n][0], x1 = CELLS[n][1];
+        var g = c.createLinearGradient(0, CELL_Y[0], 0, CELL_Y[1]);
+        g.addColorStop(0, '#3b3431'); g.addColorStop(1, '#2f2926');
+        c.fillStyle = g; c.fillRect(x0 + 3, CELL_Y[0] + 3, x1 - x0 - 6, cellH - 6);
+        c.font = '700 ' + Math.round(cellH * 0.62) + 'px Archivo, Arial, sans-serif';
+        c.textAlign = 'center'; c.textBaseline = 'middle';
+        if (accepted) { c.shadowColor = 'rgba(255,190,100,0.9)'; c.shadowBlur = 16; c.fillStyle = '#ffc77a'; }
+        else { c.shadowBlur = 0; c.fillStyle = '#efe3d2'; }
+        c.fillText(CODE[n], (x0 + x1) / 2, CELL_Y[0] + cellH * 0.55);
+        c.shadowBlur = 0;
+      }
+      if (typed) {
+        c.fillStyle = '#2f2a27'; c.fillRect(LABEL[0], LABEL[1], LABEL[2] - LABEL[0], LABEL[3] - LABEL[1]);
+        c.font = '600 15px Archivo, Arial, sans-serif';
+        c.fillStyle = accepted ? '#ffc77a' : '#b29c89';
+        if ('letterSpacing' in c) c.letterSpacing = '4px';
+        c.fillText(accepted ? 'LIBERADO' : 'DIGITANDO', (LABEL[0] + LABEL[2]) / 2, (LABEL[1] + LABEL[3]) / 2 + 1);
+        if ('letterSpacing' in c) c.letterSpacing = '0px';
+      }
+      c.globalAlpha = 1;
+    }
+    floorY = cover.y - up + FLOOR.y * VH * cover.s;
+  }
 
   var shown = { front: '', back: '' };
   function setFace(side, src) {
@@ -176,60 +264,20 @@
     lights[side].style.maskImage = m;
   }
 
-  var vaultGone = false;
   function render(p) {
-    // --- vault: password, dial, door, dive (skipped once it has left the screen)
-    var past = p > T.sceneOut[1] + 0.01;
-    if (past && vaultGone) { renderShirt(p); return; }
-    vaultGone = past;
-
-    var typed = T.digits.filter(function (t) { return p >= t; }).length;
-    var accepted = p >= T.ok;
-    cells.forEach(function (c, i) {
-      c.firstChild.textContent = i < typed ? CODE[i] : '';
-      c.classList.toggle('on', i < typed);
-      c.classList.toggle('ok', accepted);
-    });
-    vlabel.textContent = accepted ? 'LIBERADO' : (typed ? 'DIGITANDO' : 'TRAVADO');
-    vlabel.classList.toggle('ok', accepted);
-
-    var pop = smooth(T.pop[0], T.pop[1], p);
-    var open = ease(smooth(T.open[0], T.open[1], p));
-    var dive = smooth(T.dive[0], T.dive[1], p);
-    var diveE = dive * dive * (1.6 - 0.6 * dive);
-    vplate.style.transform = 'rotate(' + (ease(smooth(T.dial[0], T.dial[1], p)) * 450).toFixed(1) + 'deg)';
-    vdoor.style.transform = 'translateZ(' + (pop * 26).toFixed(1) + 'px) rotateY(' + (-108 * open).toFixed(2) + 'deg)';
-    vlight.style.opacity = (Math.max(pop * 0.35, open) * (1 - 0.85 * dive)).toFixed(3);
-    // the room behind the door lights up as it opens
-    vroom.style.filter = 'brightness(' + (0.35 + 0.55 * open).toFixed(3) + ')';
-    // camera moves through the opening until it fills the screen (no bigger, so it stays cheap)
-    vscene.style.transform = 'scale(' + (1 + diveE * (diveFill - 1)).toFixed(3) + ')';
-    vbg.style.transform = 'scale(' + (1 + diveE * 0.6).toFixed(3) + ')';
-    var sceneOut = smooth(T.sceneOut[0], T.sceneOut[1], p);
-    vscene.style.opacity = vbg.style.opacity = vshade.style.opacity = (1 - sceneOut).toFixed(3);
-    vscene.style.visibility = vbg.style.visibility = sceneOut >= 1 ? 'hidden' : 'visible';
-
+    drawFilm(p);
     var introOut = smooth(0.008, 0.04, p);
     intro.style.opacity = (1 - introOut).toFixed(3);
     intro.style.transform = 'translateY(' + (-24 * introOut).toFixed(1) + 'px)';
-    cap1.style.opacity = (smooth(T.ok, T.ok + 0.012, p) * (1 - smooth(T.pop[0], T.pop[1], p))).toFixed(3);
+    cap1.style.opacity = (smooth(T.ok, T.ok + 0.01, p) * (1 - smooth(T.digitsOut[0], T.digitsOut[1] + 0.02, p))).toFixed(3);
     renderShirt(p);
   }
 
   function renderShirt(p) {
-    // --- the room: fades in as the camera passes the door, and settles from a slight push-in
-    var roomIn = smooth(T.dive[0] + 0.04, T.sceneOut[1], p);
-    room.style.opacity = roomIn.toFixed(3);
-    var settle = 1 + 0.18 * (1 - ease(smooth(T.dive[0] + 0.04, T.arrive[1], p)));
-    var sc = roomScale * settle;
-    var cx = stageW / 2, cy = floorY;
-    roomBg.style.transform = 'translate3d(' + (cx + (roomX - cx) * settle).toFixed(1) + 'px,' + (cy + (roomY - cy) * settle).toFixed(1) + 'px,0) scale(' + sc.toFixed(4) + ')';
-
-    // --- the shirt
-    var X = narrow ? [50, 50, 50, 50, 50] : [50, 57, 43, 57, 43];
+    var X = narrow ? [50, 50, 50, 50, 50] : [48, 56, 42, 56, 42];
     var K = T.path(X);
     var arrive = ease(smooth(T.arrive[0], T.arrive[1], p));
-    var x = X[0], ry, tilt = 0, lift = 0;
+    var x = X[0], ry, tilt = 0, raise = 0;
     if (p < K[0][0]) { ry = lerp(-75, 0, arrive); tilt = lerp(-6, 0, arrive); }
     else {
       x = K[K.length - 1][1]; ry = K[K.length - 1][2];
@@ -240,7 +288,7 @@
           ry = lerp(K[k][2], K[k + 1][2], t);
           var swing = Math.sin(t * Math.PI);
           tilt = swing * 3 * (K[k + 1][1] < K[k][1] ? -1 : 1);
-          lift = swing * teeH * 0.04;
+          raise = swing * teeH * 0.04;
           break;
         }
       }
@@ -248,28 +296,6 @@
     var on = smooth(T.arrive[0] - 0.01, T.arrive[0] + 0.03, p);
     tees.style.opacity = on.toFixed(3);
     tees.style.visibility = on > 0 ? 'visible' : 'hidden';
-    if (on <= 0) return;
-    var r = Math.max(0, ry);
-    setFace('front', LOOKS[r < 180 ? 0 : 2]);
-    setFace('back', LOOKS[r < 360 ? 1 : 3]);
-    var px = x / 100 * stageW - teeW / 2;
-    var bob = Math.sin(p * 60) * teeH * 0.006;
-    var py = floorY - teeH - teeH * 0.06 - lift + bob;      // hangs just above the floor
-    var z = lerp(-1600, 0, arrive);
-    tee.style.transform = 'translate3d(' + px.toFixed(1) + 'px,' + py.toFixed(1) + 'px,' + z.toFixed(1) + 'px) rotateZ(' + tilt.toFixed(2) + 'deg)';
-    teeCard.style.transform = 'rotateY(' + ry.toFixed(2) + 'deg)';
-    // reflection on the floor: same card, flipped below the hem
-    var ry2 = floorY + (floorY - (py + teeH));
-    refl.style.transform = 'translate3d(' + px.toFixed(1) + 'px,' + ry2.toFixed(1) + 'px,' + z.toFixed(1) + 'px) rotateZ(' + (-tilt).toFixed(2) + 'deg) scaleY(-1)';
-    reflCard.style.transform = 'rotateY(' + ry.toFixed(2) + 'deg)';
-    refl.style.opacity = (0.2 * smooth(0.42, 0.46, p)).toFixed(3);
-    // soft shadow on the floor, narrower while the shirt is edge-on
-    var turn = Math.abs(Math.cos(ry * Math.PI / 180));
-    var sw = teeW * 0.86 * (0.45 + 0.55 * turn);
-    shadow.style.transform = 'translate3d(' + (x / 100 * stageW - sw / 2).toFixed(1) + 'px,' + (floorY - 17).toFixed(1) + 'px,0) scaleX(' + (sw / (teeW * 0.86)).toFixed(3) + ')';
-    shadow.style.opacity = (0.85 * smooth(0.42, 0.46, p) * (0.7 + 0.3 * turn)).toFixed(3);
-
-    // --- copy for the active look
     lookEls.forEach(function (el, i) {
       var w = T.rests[i];
       var o = smooth(w[0] - 0.03, w[0], p) * (1 - smooth(w[1], w[1] + 0.03, p));
@@ -279,6 +305,25 @@
       var dy = (1 - o) * 20;
       el.style.transform = narrow ? 'translateY(' + dy.toFixed(1) + 'px)' : 'translateY(calc(-50% + ' + dy.toFixed(1) + 'px))';
     });
+    if (on <= 0) return;
+    var r = Math.max(0, ry);
+    setFace('front', LOOKS[r < 180 ? 0 : 2]);
+    setFace('back', LOOKS[r < 360 ? 1 : 3]);
+
+    var px = x / 100 * stageW - teeW / 2;
+    var bob = Math.sin(p * 60) * teeH * 0.006;
+    var py = floorY - teeH - teeH * 0.06 - raise + bob;      // hangs just above the floor
+    var z = lerp(-1600, 0, arrive);
+    tee.style.transform = 'translate3d(' + px.toFixed(1) + 'px,' + py.toFixed(1) + 'px,' + z.toFixed(1) + 'px) rotateZ(' + tilt.toFixed(2) + 'deg)';
+    teeCard.style.transform = 'rotateY(' + ry.toFixed(2) + 'deg)';
+    var ry2 = floorY + (floorY - (py + teeH));
+    refl.style.transform = 'translate3d(' + px.toFixed(1) + 'px,' + ry2.toFixed(1) + 'px,' + z.toFixed(1) + 'px) rotateZ(' + (-tilt).toFixed(2) + 'deg) scaleY(-1)';
+    reflCard.style.transform = 'rotateY(' + ry.toFixed(2) + 'deg)';
+    refl.style.opacity = (0.2 * smooth(0.43, 0.47, p)).toFixed(3);
+    var turn = Math.abs(Math.cos(ry * Math.PI / 180));
+    var sw = teeW * 0.86 * (0.45 + 0.55 * turn);
+    shadow.style.transform = 'translate3d(' + (x / 100 * stageW - sw / 2).toFixed(1) + 'px,' + (floorY - 17).toFixed(1) + 'px,0) scaleX(' + (sw / (teeW * 0.86)).toFixed(3) + ')';
+    shadow.style.opacity = (0.85 * smooth(0.43, 0.47, p) * (0.7 + 0.3 * turn)).toFixed(3);
   }
 
   // ---------- scroll loop (eased, so wheel clicks glide instead of jumping) ----------
@@ -418,16 +463,17 @@
     });
   }
   window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', function () { layout(); target = current = progress(); vaultGone = false; render(current); campaignMotion(); });
+  window.addEventListener('resize', function () { layout(); target = current = progress(); render(current); campaignMotion(); });
   layout();
+  loadFrame(0, function () { drawFilm(lastP, true); });
   target = current = progress();
   render(current);
   campaignMotion();
 
   // everything below the first screen loads after the vault is on screen
   function loadLater() {
-    roomBg.src = roomBg.dataset.src;
-    var big = new Image(); big.onload = function () { vroom.src = big.src; }; big.src = 'assets/vault/room.webp';
+    loadAllFrames();
+    var r = new Image(); r.onload = function () { roomImg = r; drawFilm(lastP, true); }; r.src = 'assets/vault-film/room.webp';
     storeImages();
     LOOKS.forEach(function (src) { var i = new Image(); i.src = src; });
   }

@@ -9,9 +9,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="preload" as="image" href="assets/vault/wall.webp" fetchpriority="high">
-<link rel="preload" as="image" href="assets/vault/door.webp" fetchpriority="high">
-<link rel="stylesheet" href="style.css?v=20">
+<link rel="preload" as="image" href="assets/vault-film/d/000.webp" fetchpriority="high" media="(min-width: 760px)">
+<link rel="preload" as="image" href="assets/vault-film/m/000.webp" fetchpriority="high" media="(max-width: 759px)">
+<link rel="stylesheet" href="style.css?v=21">
 </head>
 <body>
 
@@ -40,41 +40,8 @@
 
   <div class="stage" aria-hidden="true">
 
-    <!-- inside the vault (photo) -->
-    <div class="room" id="room">
-      <img class="room-bg" id="roomBg" data-src="assets/vault/room.webp" alt="" decoding="async">
-      <div class="room-dust"></div>
-    </div>
-
-    <!-- the vault on the street wall (photo split into layers) -->
-    <div class="vbg" id="vbg"></div>
-    <div class="vscene" id="vscene">
-      <img class="vwall" src="assets/vault/wall.webp" alt="" fetchpriority="high">
-      <div class="vhole" id="vhole">
-        <img class="vhole-room" id="vroom" src="assets/vault/room-small.webp" alt="" decoding="async">
-        <div class="vhole-depth"></div>
-        <div class="vhole-light" id="vlight"></div>
-      </div>
-      <div class="vdoor-box">
-        <div class="vdoor" id="vdoor">
-          <div class="vdoor-edge" style="transform: translateZ(-8px)"></div>
-          <div class="vdoor-edge" style="transform: translateZ(-16px)"></div>
-          <div class="vdoor-edge" style="transform: translateZ(-24px)"></div>
-          <div class="vdoor-edge" style="transform: translateZ(-32px)"></div>
-          <div class="vdoor-back"></div>
-          <div class="vdoor-front">
-            <img class="vdoor-img" src="assets/vault/door.webp" alt="" fetchpriority="high">
-            <img class="vplate" id="vplate" src="assets/vault/plate.webp" alt="" decoding="async">
-            <span class="vcell" style="left:37.48%"><b></b></span>
-            <span class="vcell" style="left:43.91%"><b></b></span>
-            <span class="vcell" style="left:50.35%"><b></b></span>
-            <span class="vcell" style="left:56.78%"><b></b></span>
-            <span class="vlabel" id="vlabel">TRAVADO</span>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="vshade" id="vshade"></div>
+    <!-- the vault opening: a film scrubbed by the scroll -->
+    <canvas class="film" id="film"></canvas>
 
     <div class="intro" id="intro">
       <p class="intro-title">Entre na<br>Banca</p>
@@ -286,6 +253,6 @@
   </footer>
 </main>
 
-<script src="main.js?v=20"></script>
+<script src="main.js?v=21"></script>
 </body>
 </html>
