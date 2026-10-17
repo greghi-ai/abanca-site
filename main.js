@@ -427,6 +427,7 @@
   // everything below the first screen loads after the vault is on screen
   function loadLater() {
     roomBg.src = roomBg.dataset.src;
+    var big = new Image(); big.onload = function () { vroom.src = big.src; }; big.src = 'assets/vault/room.webp';
     storeImages();
     LOOKS.forEach(function (src) { var i = new Image(); i.src = src; });
   }
