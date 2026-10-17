@@ -9,7 +9,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=17">
+<link rel="preload" as="image" href="assets/vault/wall.webp" fetchpriority="high">
+<link rel="preload" as="image" href="assets/vault/door.webp" fetchpriority="high">
+<link rel="stylesheet" href="style.css?v=19">
 </head>
 <body>
 
@@ -40,18 +42,18 @@
 
     <!-- inside the vault (photo) -->
     <div class="room" id="room">
-      <img class="room-bg" id="roomBg" src="assets/vault/room.jpg" alt="" decoding="async">
+      <img class="room-bg" id="roomBg" data-src="assets/vault/room.webp" alt="" decoding="async">
       <div class="room-dust"></div>
     </div>
 
     <!-- the vault on the street wall (photo split into layers) -->
     <div class="vbg" id="vbg"></div>
     <div class="vscene" id="vscene">
-      <img class="vwall" src="assets/vault/wall.jpg" alt="" decoding="async">
+      <img class="vwall" src="assets/vault/wall.webp" alt="" fetchpriority="high">
       <div class="vhole" id="vhole">
+        <img class="vhole-room" id="vroom" src="assets/vault/room-small.webp" alt="" decoding="async">
         <div class="vhole-depth"></div>
         <div class="vhole-light" id="vlight"></div>
-        <div class="vhole-rays" id="vrays"></div>
       </div>
       <div class="vdoor-box">
         <div class="vdoor" id="vdoor">
@@ -61,7 +63,7 @@
           <div class="vdoor-edge" style="transform: translateZ(-32px)"></div>
           <div class="vdoor-back"></div>
           <div class="vdoor-front">
-            <img class="vdoor-img" src="assets/vault/door.webp" alt="" decoding="async">
+            <img class="vdoor-img" src="assets/vault/door.webp" alt="" fetchpriority="high">
             <img class="vplate" id="vplate" src="assets/vault/plate.webp" alt="" decoding="async">
             <span class="vcell" style="left:37.48%"><b></b></span>
             <span class="vcell" style="left:43.91%"><b></b></span>
@@ -284,6 +286,6 @@
   </footer>
 </main>
 
-<script src="main.js?v=17"></script>
+<script src="main.js?v=19"></script>
 </body>
 </html>

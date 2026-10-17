@@ -16,7 +16,6 @@
     'assets/tees/look-3-welove.webp',
     'assets/tees/look-4-michael.webp'
   ];
-  LOOKS.forEach(function (src) { var i = new Image(); i.src = src; }); // preload
 
   // ---------- products ----------
   var C = {
@@ -90,18 +89,20 @@
   var bestRail = document.getElementById('best'), printsRail = document.getElementById('prints');
   fillRail(bestRail, 'tees');
   fillRail(printsRail, 'prints');
-  document.querySelectorAll('[data-offer-shirt]').forEach(function (el) {
-    el.style.backgroundImage = 'url(' + TEE(el.dataset.offerShirt) + ')';
-  });
-  var catTees = document.querySelector('.cat-tees');
-  if (catTees) { var ci = new Image(); ci.alt = ''; ci.src = TEE('O'); catTees.appendChild(ci); }
+  function storeImages() {
+    document.querySelectorAll('[data-offer-shirt]').forEach(function (el) {
+      el.style.backgroundImage = 'url(' + TEE(el.dataset.offerShirt) + ')';
+    });
+    var catTees = document.querySelector('.cat-tees');
+    if (catTees && !catTees.querySelector('img')) { var ci = new Image(); ci.alt = ''; ci.src = TEE('O'); catTees.appendChild(ci); }
+  }
 
   // ---------- elements ----------
   var $ = function (id) { return document.getElementById(id); };
   var story = $('story'), stage = story.querySelector('.stage');
   var room = $('room'), roomBg = $('roomBg');
   var vbg = $('vbg'), vscene = $('vscene'), vdoor = $('vdoor'), vplate = $('vplate');
-  var vlight = $('vlight'), vrays = $('vrays'), vlabel = $('vlabel'), vshade = $('vshade');
+  var vlight = $('vlight'), vroom = $('vroom'), vlabel = $('vlabel'), vshade = $('vshade');
   var cells = Array.prototype.slice.call(document.querySelectorAll('.vcell'));
   var intro = $('intro'), cap1 = $('cap1');
   var tees = $('tees'), tee = $('tee'), teeCard = $('teeCard'), refl = $('teeRefl'), reflCard = $('reflCard'), shadow = $('shadow');
@@ -119,7 +120,7 @@
   var IMG_W = 2752, IMG_H = 1536, VAULT_D = 1360 / IMG_W;   // street vault photo
   var ROOM_W = 2752, ROOM_H = 1536, ROOM_FLOOR = 0.80;       // vault room photo: centre of the light pool on the floor
   var stageW = 1, stageH = 1, narrow = false;
-  var teeW = 400, teeH = 362, floorY = 600, roomScale = 1, roomX = 0, roomY = 0;
+  var teeW = 400, teeH = 362, floorY = 600, roomScale = 1, roomX = 0, roomY = 0, diveFill = 4;
 
   function layout() {
     stageW = stage.clientWidth; stageH = stage.clientHeight; narrow = stageW < 760;
@@ -131,6 +132,7 @@
     vscene.style.left = (stageW / 2 - sceneW / 2) + 'px';
     vscene.style.top = (stageH * 0.52 - sceneH * 0.5013) + 'px';
     vscene.style.setProperty('--dw', (sceneW * 0.41788) + 'px');
+    diveFill = Math.hypot(stageW, stageH) / (sceneW * 0.41788) * 1.04;
 
     // vault room photo: cover the stage; on phones lift the floor so the shirt sits above the text panel
     roomScale = Math.max(stageW / ROOM_W, stageH / ROOM_H);
@@ -198,9 +200,10 @@
     vplate.style.transform = 'rotate(' + (ease(smooth(T.dial[0], T.dial[1], p)) * 450).toFixed(1) + 'deg)';
     vdoor.style.transform = 'translateZ(' + (pop * 26).toFixed(1) + 'px) rotateY(' + (-108 * open).toFixed(2) + 'deg)';
     vlight.style.opacity = (Math.max(pop * 0.35, open) * (1 - 0.85 * dive)).toFixed(3);
-    vrays.style.opacity = (open * (1 - dive)).toFixed(3);
-    vrays.style.transform = 'rotate(' + (p * 120).toFixed(1) + 'deg)';
-    vscene.style.transform = 'scale(' + (1 + diveE * 11).toFixed(3) + ')';
+    // the room behind the door lights up as it opens
+    vroom.style.filter = 'brightness(' + (0.35 + 0.55 * open).toFixed(3) + ')';
+    // camera moves through the opening until it fills the screen (no bigger, so it stays cheap)
+    vscene.style.transform = 'scale(' + (1 + diveE * (diveFill - 1)).toFixed(3) + ')';
     vbg.style.transform = 'scale(' + (1 + diveE * 0.6).toFixed(3) + ')';
     var sceneOut = smooth(T.sceneOut[0], T.sceneOut[1], p);
     vscene.style.opacity = vbg.style.opacity = vshade.style.opacity = (1 - sceneOut).toFixed(3);
@@ -242,14 +245,13 @@
         }
       }
     }
-    var r = Math.max(0, ry);
-    setFace('front', LOOKS[r < 180 ? 0 : 2]);
-    setFace('back', LOOKS[r < 360 ? 1 : 3]);
-
     var on = smooth(T.arrive[0] - 0.01, T.arrive[0] + 0.03, p);
     tees.style.opacity = on.toFixed(3);
     tees.style.visibility = on > 0 ? 'visible' : 'hidden';
     if (on <= 0) return;
+    var r = Math.max(0, ry);
+    setFace('front', LOOKS[r < 180 ? 0 : 2]);
+    setFace('back', LOOKS[r < 360 ? 1 : 3]);
     var px = x / 100 * stageW - teeW / 2;
     var bob = Math.sin(p * 60) * teeH * 0.006;
     var py = floorY - teeH - teeH * 0.06 - lift + bob;      // hangs just above the floor
@@ -421,4 +423,13 @@
   target = current = progress();
   render(current);
   campaignMotion();
+
+  // everything below the first screen loads after the vault is on screen
+  function loadLater() {
+    roomBg.src = roomBg.dataset.src;
+    storeImages();
+    LOOKS.forEach(function (src) { var i = new Image(); i.src = src; });
+  }
+  if (document.readyState === 'complete') setTimeout(loadLater, 50);
+  else window.addEventListener('load', function () { setTimeout(loadLater, 50); });
 })();
