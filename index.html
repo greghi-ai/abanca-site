@@ -9,15 +9,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=8">
+<link rel="stylesheet" href="style.css?v=11">
 </head>
 <body>
 
 <header class="nav" id="nav">
   <a href="#" class="logo" aria-label="A Banca Store, início">A&nbsp;BANCA</a>
   <nav class="nav-links" aria-label="Principal">
-    <a href="#basicas">Camisetas</a>
-    <a href="#calcas">Calças</a>
+    <a href="#loja-online">Camisetas</a>
+    <a href="#loja-online">Calças</a>
     <a href="#conjunto">Conjuntos</a>
     <a href="#">Bonés</a>
     <a href="#loja">Loja física</a>
@@ -156,83 +156,125 @@
 </div>
 <!-- /SCROLL STORY -->
 
-<main class="site">
+<main class="site" id="loja-online">
 
-  <p class="perks">5% de desconto no Pix, até 6x sem juros e frete grátis no Sudeste acima de R$ 299,99.</p>
+  <!-- benefits ticker -->
+  <div class="ticker" aria-label="Vantagens">
+    <div class="ticker-track">
+      <span>Frete grátis no Sudeste acima de R$ 299,99</span><span>5% de desconto no Pix</span><span>Até 6x sem juros</span><span>Primeira troca grátis em 7 dias</span><span>Loja física no Maxi Shopping</span>
+      <span aria-hidden="true">Frete grátis no Sudeste acima de R$ 299,99</span><span aria-hidden="true">5% de desconto no Pix</span><span aria-hidden="true">Até 6x sem juros</span><span aria-hidden="true">Primeira troca grátis em 7 dias</span><span aria-hidden="true">Loja física no Maxi Shopping</span>
+    </div>
+  </div>
 
-  <a href="#" class="sale" id="conjunto">
-    <div class="sale-copy">
-      <p class="sale-kicker">Agasalhos com até 40% de desconto</p>
-      <h2 class="sale-title">Conjunto moletom zíper duplo</h2>
-      <p class="sale-price"><s>R$ 599,99</s> <b>R$ 289,99</b> <span>ou R$ 275,49 no Pix</span></p>
+  <!-- campaign -->
+  <section class="campaign" id="conjunto" aria-labelledby="h-campaign">
+    <div class="campaign-dots" aria-hidden="true"></div>
+    <div class="campaign-type" aria-hidden="true">
+      <span class="ct-row" data-speed="-1">AGASALHOS AGASALHOS AGASALHOS AGASALHOS</span>
+      <span class="ct-row" data-speed="1">ATÉ 40% OFF ATÉ 40% OFF ATÉ 40% OFF</span>
     </div>
-    <div class="sale-side">
-      <span class="tag tag-lg">−52%</span>
-      <div class="sale-swatches"><span style="background:#6B4E3A" title="Marrom"></span><span style="background:#C9B79C" title="Bege"></span></div>
-      <span class="btn">Comprar conjunto</span>
+    <div class="campaign-card">
+      <p class="campaign-kicker">Coleção de frio</p>
+      <h2 id="h-campaign" class="campaign-title">Conjunto moletom zíper duplo</h2>
+      <p class="campaign-price"><s>R$ 599,99</s> <b>R$ 289,99</b></p>
+      <p class="campaign-pix">ou R$ 275,49 no Pix, ou 4x de R$ 72,50</p>
+      <div class="campaign-colors"><span style="background:#5E4433"></span>Marrom<span style="background:#C9B79C"></span>Bege</div>
+      <a class="btn btn-dark" href="#">Comprar conjunto</a>
     </div>
-  </a>
-
-  <section class="shelf" id="basicas" aria-labelledby="h-basicas">
-    <div class="shelf-head">
-      <h2 id="h-basicas" class="shelf-title">Básicas</h2>
-      <p class="shelf-sub">Lisas, do P ao GG, em sete cores. As que você usa toda semana.</p>
-      <a class="text-link" href="#">Ver todas</a>
-    </div>
-    <div class="grid" data-products="basics"></div>
+    <div class="campaign-sticker" aria-hidden="true">−52%</div>
   </section>
 
-  <section class="shelf" id="calcas" aria-labelledby="h-calcas">
-    <div class="shelf-head">
-      <h2 id="h-calcas" class="shelf-title">Calças baggy</h2>
-      <p class="shelf-sub">Bordadas, estonadas e destroyed. Numeração do 38 ao 46.</p>
-      <a class="text-link" href="#">Ver todas</a>
-    </div>
-    <div class="grid" data-products="pants"></div>
-  </section>
-
-  <section class="shelf" id="estampadas" aria-labelledby="h-estampadas">
-    <div class="shelf-head">
-      <h2 id="h-estampadas" class="shelf-title">Estampadas</h2>
-      <p class="shelf-sub">Esportes, fé e os artistas que marcaram a rua. Preto ou off white.</p>
-      <a class="text-link" href="#">Ver todas</a>
-    </div>
-    <div class="grid" data-products="prints"></div>
-  </section>
-
-  <ul class="benefits" aria-label="Vantagens">
-    <li><b>Até 6x</b> sem juros no cartão</li>
-    <li><b>5% off</b> pagando no Pix</li>
-    <li><b>Frete grátis</b> no Sudeste acima de R$ 299,99</li>
-    <li><b>1ª troca grátis</b> em até 7 dias</li>
-  </ul>
-
-  <footer class="store" id="loja">
-    <div class="store-main">
-      <h2 class="store-title">A loja fica no<br>Maxi Shopping</h2>
-      <address class="store-address">Piso 1, loja 1425<br>Av. Antonio Frederico Ozanam, 6000</address>
-      <div class="store-actions">
-        <a class="btn" href="https://www.google.com/maps/search/?api=1&query=Av.+Antonio+Frederico+Ozanam,+6000+Maxi+Shopping">Como chegar</a>
-        <a class="btn btn-ghost" href="https://wa.me/5511940471041">Chamar no WhatsApp</a>
+  <!-- best sellers -->
+  <section class="rail" aria-labelledby="h-best">
+    <div class="rail-head">
+      <h2 id="h-best" class="rail-title reveal">Mais vendidos</h2>
+      <div class="tabs" role="tablist" aria-label="Categorias">
+        <button role="tab" class="tab" aria-selected="true" data-tab="tees">Camisetas</button>
+        <button role="tab" class="tab" aria-selected="false" data-tab="pants">Calças</button>
+        <button role="tab" class="tab" aria-selected="false" data-tab="others">Conjuntos e regatas</button>
+      </div>
+      <div class="rail-arrows">
+        <button class="arrow" data-dir="-1" aria-label="Anteriores"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6"/></svg></button>
+        <button class="arrow" data-dir="1" aria-label="Próximos"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button>
       </div>
     </div>
-    <div class="store-note">
-      <p>Sim, 1425 é a senha do cofre.</p>
+    <div class="rail-track" id="best" data-rail></div>
+  </section>
+
+  <!-- categories -->
+  <section class="cats" aria-label="Categorias">
+    <a href="#" class="cat cat-tees"><span class="cat-name">Camisetas<br>over</span><span class="cat-count">Básicas, cristãs, artistas</span></a>
+    <a href="#" class="cat cat-pants"><span class="cat-name">Calças<br>baggy</span><span class="cat-count">Do 38 ao 46</span></a>
+    <a href="#" class="cat cat-sets"><span class="cat-name">Conjuntos</span><span class="cat-count">Moletom e casual</span></a>
+    <a href="#" class="cat cat-caps"><span class="cat-name">Bonés</span><span class="cat-count">Aba reta e curva</span></a>
+  </section>
+
+  <!-- new in -->
+  <section class="rail" aria-labelledby="h-new">
+    <div class="rail-head">
+      <h2 id="h-new" class="rail-title reveal">Estampadas</h2>
+      <p class="rail-sub">Esportes, fé e os artistas que marcaram a rua.</p>
+      <div class="rail-arrows">
+        <button class="arrow" data-dir="-1" aria-label="Anteriores"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6"/></svg></button>
+        <button class="arrow" data-dir="1" aria-label="Próximos"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button>
+      </div>
     </div>
-    <div class="store-bottom">
-      <a href="#" class="logo">A&nbsp;BANCA</a>
-      <nav aria-label="Ajuda">
-        <a href="#">Trocas e devoluções</a>
-        <a href="#">Minhas compras</a>
-        <a href="https://wa.me/5511940471041">(11) 94047-1041</a>
-        <span>[SEU E-MAIL DE CONTATO]</span>
-      </nav>
-      <p class="copy">© 2026 A Banca Store</p>
+    <div class="rail-track" id="prints" data-rail></div>
+  </section>
+
+  <!-- offers -->
+  <section class="offers" aria-label="Ofertas">
+    <a href="#" class="offer offer-dark">
+      <span class="offer-kicker">Básicas e regatas</span>
+      <span class="offer-big">a partir de<br><b>R$ 104,49</b></span>
+      <span class="offer-note">no Pix</span>
+      <span class="offer-shirt" data-offer-shirt="#1E1C1B"></span>
+    </a>
+    <a href="#" class="offer offer-red">
+      <span class="offer-kicker">Kit 3 camisetas</span>
+      <span class="offer-big">monte o seu<br><b>R$ 259,90</b></span>
+      <span class="offer-note">em até 4x sem juros</span>
+      <span class="offer-shirt" data-offer-shirt="#E2DBCD"></span>
+    </a>
+    <a href="#" class="offer offer-light">
+      <span class="offer-kicker">Calças baggy</span>
+      <span class="offer-big">a partir de<br><b>R$ 218,49</b></span>
+      <span class="offer-note">no Pix</span>
+    </a>
+  </section>
+
+  <!-- store -->
+  <section class="store" id="loja" aria-labelledby="h-store">
+    <div class="store-copy">
+      <h2 id="h-store" class="store-title reveal">Vem na loja</h2>
+      <p class="store-text">Prova, troca e leva na hora. A Banca fica no piso 1 do Maxi Shopping, loja 1425.</p>
+      <address class="store-address">Av. Antonio Frederico Ozanam, 6000</address>
+      <div class="store-actions">
+        <a class="btn btn-dark" href="https://www.google.com/maps/search/?api=1&query=Av.+Antonio+Frederico+Ozanam,+6000+Maxi+Shopping">Como chegar</a>
+        <a class="btn btn-outline" href="https://wa.me/5511940471041">Chamar no WhatsApp</a>
+      </div>
     </div>
+    <div class="store-badge" aria-hidden="true"><span>LOJA</span><b>1425</b><span>Maxi Shopping<br>Piso 1</span></div>
+  </section>
+
+  <footer class="foot">
+    <div class="foot-brand">
+      <a href="#" class="logo logo-dark">A&nbsp;BANCA</a>
+      <p>Cultura de rua, do básico ao estampado.</p>
+    </div>
+    <nav class="foot-col" aria-label="Loja">
+      <p>Loja</p>
+      <a href="#">Camisetas</a><a href="#">Calças</a><a href="#">Conjuntos</a><a href="#">Bonés</a>
+    </nav>
+    <nav class="foot-col" aria-label="Ajuda">
+      <p>Ajuda</p>
+      <a href="#">Trocas e devoluções</a><a href="#">Minhas compras</a><a href="https://wa.me/5511940471041">WhatsApp (11) 94047-1041</a><span>[SEU E-MAIL DE CONTATO]</span>
+    </nav>
+    <p class="foot-copy">© 2026 A Banca Store. Pagamento em até 6x sem juros ou 5% off no Pix.</p>
   </footer>
 </main>
 
-<script src="shirt3d.js?v=8"></script>
-<script src="main.js?v=8"></script>
+<script src="shirt3d.js?v=11"></script>
+<script src="main.js?v=11"></script>
 </body>
 </html>

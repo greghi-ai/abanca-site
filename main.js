@@ -31,31 +31,37 @@
     M: ['Marrom', '#5E4433'], N: ['Azul-marinho', '#1F2A44'], V: ['Vinho', '#5A1F2B'], Gr: ['Verde', '#3E4A3A'],
     J: ['Jeans', '#4B6584'], Ci: ['Cinza', '#7D7B77'], G: ['Grafite', '#3E3F42'], R: ['Vermelho', '#8E2424']
   };
-  // kind: 'tee' renders the 3D shirt in colour `show`; anything else gets a colour block
+  // kind 'tee' = rendered with the 3D shirt in colour `show`; anything else = colour block with a word
   var PRODUCTS = {
-    basics: [
-      { name: 'Camiseta Culture Basic azul-marinho', line: 'Culture Basic', kind: 'tee', show: 'N', colors: 'N W O Be B', price: 'R$ 129,99', old: 'R$ 189,99', off: '−32%' },
-      { name: 'Camiseta Basic Premium vinho', line: 'Basic Premium', kind: 'tee', show: 'V', colors: 'V M Be O B', price: 'R$ 159,99', old: 'R$ 209,99', off: '−24%' },
-      { name: 'Camiseta Basic Premium marrom', line: 'Basic Premium', kind: 'tee', show: 'M', colors: 'M V Be O B', price: 'R$ 159,99', old: 'R$ 209,99', off: '−24%' },
-      { name: 'Camiseta Culture Basic off white', line: 'Culture Basic', kind: 'tee', show: 'O', colors: 'O W Be N B', price: 'R$ 129,99', old: 'R$ 189,99', off: '−32%' },
-      { name: 'Camiseta compressão preta', line: 'Compressão', kind: 'tee', show: 'B', colors: 'B W', price: 'R$ 119,99', old: 'R$ 179,99', off: '−33%' },
-      { name: 'Camiseta Basic Premium bege', line: 'Basic Premium', kind: 'tee', show: 'Be', colors: 'Be M V O B', price: 'R$ 159,99', old: 'R$ 209,99', off: '−24%' },
-      { name: 'Regata canelada branca', line: 'Regata', kind: 'block', word: 'Regata', show: 'W', colors: 'W B', price: 'R$ 109,99', old: 'R$ 169,99', off: '−35%' },
-      { name: 'Kit 3 camisetas básicas', line: 'Você escolhe as cores', kind: 'tee', show: 'Gr', colors: 'B M W N Be O Gr', price: 'R$ 259,90', old: 'R$ 379,99', off: '−32%' }
+    tees: [
+      { name: 'Camiseta Culture Basic azul-marinho', kind: 'tee', show: 'N', colors: 'N W O Be B', price: 'R$ 129,99', old: 'R$ 189,99', off: '32% OFF', inst: 'ou 2x de R$ 65,00 sem juros' },
+      { name: 'Camiseta Basic Premium vinho', kind: 'tee', show: 'V', colors: 'V M Be O B', price: 'R$ 159,99', old: 'R$ 209,99', off: '24% OFF', inst: 'ou 2x de R$ 80,00 sem juros' },
+      { name: 'Kit 3 camisetas básicas', kind: 'tee', show: 'Gr', colors: 'B M W N Be O Gr', price: 'R$ 259,90', old: 'R$ 379,99', off: '32% OFF', inst: 'ou 4x de R$ 64,98 sem juros' },
+      { name: 'Camiseta Culture Basic off white', kind: 'tee', show: 'O', colors: 'O W Be N B', price: 'R$ 129,99', old: 'R$ 189,99', off: '32% OFF', inst: 'ou 2x de R$ 65,00 sem juros' },
+      { name: 'Camiseta compressão preta', kind: 'tee', show: 'B', colors: 'B W', price: 'R$ 119,99', old: 'R$ 179,99', off: '33% OFF', inst: 'ou 2x de R$ 60,00 sem juros' },
+      { name: 'Camiseta Basic Premium marrom', kind: 'tee', show: 'M', colors: 'M V Be O B', price: 'R$ 159,99', old: 'R$ 209,99', off: '24% OFF', inst: 'ou 2x de R$ 80,00 sem juros' },
+      { name: 'Camiseta Basic Premium bege', kind: 'tee', show: 'Be', colors: 'Be M V O B', price: 'R$ 159,99', old: 'R$ 209,99', off: '24% OFF', inst: 'ou 2x de R$ 80,00 sem juros' }
     ],
     pants: [
-      { name: 'Calça baggy bordado aranha', line: 'Baggy', kind: 'block', word: 'Baggy', show: 'J', colors: 'J', price: 'R$ 299,99', old: 'R$ 349,99', off: '−14%' },
-      { name: 'Calça baggy anjo silk', line: 'Baggy', kind: 'block', word: 'Baggy', show: 'J', colors: 'J', price: 'R$ 279,99', old: 'R$ 289,99', off: '−3%' },
-      { name: 'Calça baggy cargo four estonada', line: 'Cargo', kind: 'block', word: 'Cargo', show: 'Ci', colors: 'Ci', price: 'R$ 259,99', old: 'R$ 289,99', off: '−10%' },
-      { name: 'Calça baggy destroyed', line: 'Baggy', kind: 'block', word: 'Baggy', show: 'J', colors: 'J', price: 'R$ 259,99', old: 'R$ 289,99', off: '−10%' },
-      { name: 'Calça baggy basic estonada', line: 'Baggy', kind: 'block', word: 'Basic', show: 'G', colors: 'G', price: 'R$ 229,99', old: 'R$ 269,99', off: '−15%' }
+      { name: 'Calça baggy bordado aranha', kind: 'block', word: 'Baggy', show: 'J', colors: 'J', price: 'R$ 299,99', old: 'R$ 349,99', off: '14% OFF', inst: 'ou 5x de R$ 60,00 sem juros' },
+      { name: 'Calça baggy anjo silk', kind: 'block', word: 'Baggy', show: 'J', colors: 'J', price: 'R$ 279,99', old: 'R$ 289,99', off: '3% OFF', inst: 'ou 4x de R$ 70,00 sem juros' },
+      { name: 'Calça baggy cargo four estonada', kind: 'block', word: 'Cargo', show: 'Ci', colors: 'Ci', price: 'R$ 259,99', old: 'R$ 289,99', off: '10% OFF', inst: 'ou 4x de R$ 65,00 sem juros' },
+      { name: 'Calça baggy destroyed', kind: 'block', word: 'Destroyed', show: 'J', colors: 'J', price: 'R$ 259,99', old: 'R$ 289,99', off: '10% OFF', inst: 'ou 4x de R$ 65,00 sem juros' },
+      { name: 'Calça baggy basic estonada', kind: 'block', word: 'Basic', show: 'G', colors: 'G', price: 'R$ 229,99', old: 'R$ 269,99', off: '15% OFF', inst: 'ou 3x de R$ 76,66 sem juros' }
+    ],
+    others: [
+      { name: 'Conjunto moletom zíper duplo marrom', kind: 'block', word: 'Conjunto', show: 'M', colors: 'M Be', price: 'R$ 289,99', old: 'R$ 599,99', off: '52% OFF', inst: 'ou 4x de R$ 72,50 sem juros' },
+      { name: 'Conjunto moletom zíper duplo bege', kind: 'block', word: 'Conjunto', show: 'Be', colors: 'Be M', price: 'R$ 289,99', old: 'R$ 599,99', off: '52% OFF', inst: 'ou 4x de R$ 72,50 sem juros' },
+      { name: 'Regata canelada branca', kind: 'block', word: 'Regata', show: 'W', colors: 'W B', price: 'R$ 109,99', old: 'R$ 169,99', off: '35% OFF', inst: 'ou R$ 104,49 no Pix' },
+      { name: 'Regata canelada preta', kind: 'block', word: 'Regata', show: 'B', colors: 'B W', price: 'R$ 109,99', old: 'R$ 169,99', off: '35% OFF', inst: 'ou R$ 104,49 no Pix' }
     ],
     prints: [
-      { name: 'Camiseta Jordan Airness', line: 'Esportes', kind: 'tee', show: 'B', colors: 'B O', price: 'R$ 189,99', old: 'R$ 219,99', off: '−14%' },
-      { name: 'Camiseta Jesus Saved', line: 'Cristãs', kind: 'tee', show: 'O', colors: 'O B', price: 'R$ 175,99', old: 'R$ 219,99', off: '−20%' },
-      { name: 'Camiseta Rodman Bulls', line: 'Esportes', kind: 'tee', show: 'B', colors: 'B O', price: 'R$ 185,99', old: 'R$ 229,99', off: '−19%' },
-      { name: 'Camiseta Angel’s Dual', line: 'Artistas', kind: 'tee', show: 'R', colors: 'B O R', price: 'R$ 169,99', old: 'R$ 219,99', off: '−23%' },
-      { name: 'Camiseta Basic For Winners', line: 'Exclusivas', kind: 'tee', show: 'B', colors: 'B O', price: 'R$ 159,99', old: 'R$ 219,99', off: '−27%' }
+      { name: 'Camiseta Jordan Airness', kind: 'tee', show: 'B', colors: 'B O', price: 'R$ 189,99', old: 'R$ 219,99', off: '14% OFF', inst: 'ou 3x de R$ 63,33 sem juros' },
+      { name: 'Camiseta Jesus Saved', kind: 'tee', show: 'O', colors: 'O B', price: 'R$ 175,99', old: 'R$ 219,99', off: '20% OFF', inst: 'ou 2x de R$ 88,00 sem juros' },
+      { name: 'Camiseta Rodman Bulls', kind: 'tee', show: 'B', colors: 'B O', price: 'R$ 185,99', old: 'R$ 229,99', off: '19% OFF', inst: 'ou 3x de R$ 62,00 sem juros' },
+      { name: 'Camiseta Angel’s Dual', kind: 'tee', show: 'R', colors: 'B O R', price: 'R$ 169,99', old: 'R$ 219,99', off: '23% OFF', inst: 'ou 2x de R$ 85,00 sem juros' },
+      { name: 'Camiseta Basic For Winners', kind: 'tee', show: 'B', colors: 'B O', price: 'R$ 159,99', old: 'R$ 219,99', off: '27% OFF', inst: 'ou 2x de R$ 80,00 sem juros' },
+      { name: 'Camiseta We Need Jesus', kind: 'tee', show: 'O', colors: 'B O', price: 'R$ 169,99', old: 'R$ 219,99', off: '23% OFF', inst: 'ou 2x de R$ 85,00 sem juros' }
     ]
   };
 
@@ -68,26 +74,31 @@
   function lum(hex) { var n = parseInt(hex.slice(1), 16); return (0.2126 * (n >> 16) + 0.7152 * ((n >> 8) & 255) + 0.0722 * (n & 255)) / 255; }
   function palFromHex(hex) { return { fab: hex, rib: shade(hex, -0.08), seam: shade(hex, lum(hex) > 0.5 ? -0.12 : 0.12), dark: lum(hex) < 0.4 }; }
 
-  var teeQueue = [];
   function card(p) {
     var dots = p.colors.split(' ').map(function (k) { return '<span title="' + esc(C[k][0]) + '" style="background:' + C[k][1] + '"></span>'; }).join('');
     var hex = C[p.show][1], media;
     if (p.kind === 'tee') {
-      media = '<img alt="' + esc(p.name) + '" data-tee="' + hex + '">';
+      media = '<img class="front" alt="' + esc(p.name) + '" data-tee="' + hex + '" data-side="front">' +
+              '<img class="back" alt="" aria-hidden="true" data-tee="' + hex + '" data-side="back">';
     } else {
       var light = lum(hex) > 0.55;
-      media = '<div class="card-block" style="background:linear-gradient(160deg,' + shade(hex, 0.08) + ',' + shade(hex, -0.18) + ')">' +
-        '<span class="card-block-word"' + (light ? ' style="color:rgba(0,0,0,0.1)"' : '') + '>' + esc(p.word) + '</span>' +
+      media = '<div class="card-block" style="background:linear-gradient(160deg,' + shade(hex, 0.1) + ',' + shade(hex, -0.2) + ')">' +
+        '<span class="card-block-word" style="' + (light ? 'color:rgba(0,0,0,0.12);' : '') + (p.word.length > 7 ? 'font-size:clamp(38px,3.4vw,56px);' : '') + '">' + esc(p.word) + '</span>' +
         '<span class="card-block-note"' + (light ? ' style="color:rgba(0,0,0,0.55)"' : '') + '>Foto em breve</span></div>';
     }
-    return '<a href="#" class="card">' +
-      '<div class="card-media">' + media + '<span class="tag">' + esc(p.off) + '</span></div>' +
-      '<div><h3 class="card-name">' + esc(p.name) + '</h3><p class="card-line">' + esc(p.line) + '</p></div>' +
-      '<div class="card-foot"><span class="card-price">' + esc(p.price) + '<s>' + esc(p.old) + '</s></span><span class="swatches">' + dots + '</span></div></a>';
+    return '<article class="card">' +
+      '<div class="card-media"><a href="#" class="card-link" aria-label="' + esc(p.name) + '">' + media + '</a>' +
+      '<span class="tag">' + esc(p.off) + '</span>' +
+      '<button class="card-add" type="button">Adicionar à sacola</button></div>' +
+      '<span class="swatches">' + dots + '</span>' +
+      '<h3 class="card-name"><a href="#">' + esc(p.name) + '</a></h3>' +
+      '<p class="card-price">' + esc(p.price) + '<s>' + esc(p.old) + '</s></p>' +
+      '<p class="card-inst">' + esc(p.inst) + '</p></article>';
   }
-  document.querySelectorAll('[data-products]').forEach(function (el) {
-    el.innerHTML = (PRODUCTS[el.dataset.products] || []).map(card).join('');
-  });
+  function fillRail(el, key) { el.innerHTML = (PRODUCTS[key] || []).map(card).join(''); el.scrollLeft = 0; }
+  var bestRail = document.getElementById('best'), printsRail = document.getElementById('prints');
+  fillRail(bestRail, 'tees');
+  fillRail(printsRail, 'prints');
 
   // ---------- elements ----------
   var $ = function (id) { return document.getElementById(id); };
@@ -293,33 +304,162 @@
     render(current);
     if (current !== target) requestAnimationFrame(tick); else running = false;
   }
+  // ---------- product thumbnails from the 3D shirt (front + back, cached per colour) ----------
+  var thumbCache = {}, thumbBusy = false, thumbWaiting = [];
+  function thumbURL(hex, side) {
+    var key = hex + side;
+    if (!thumbCache[key]) {
+      var VH = window.Shirt3D.VIEW_H;
+      var s = Math.min(VH * 0.74 / window.Shirt3D.HEIGHT, VH * 0.8 * 0.86 / 3.0);
+      thumbCache[key] = window.Shirt3D.snapshot(BLANK, BLANK, palFromHex(hex), {
+        w: 520, h: 650, s: s, rx: 0.08, y: 0.06, ry: side === 'back' ? Math.PI + 0.42 : -0.42
+      });
+    }
+    return thumbCache[key];
+  }
+  function fillThumbs(root) {
+    if (!has3D) return;
+    thumbWaiting = thumbWaiting.concat(Array.prototype.slice.call(root.querySelectorAll('img[data-tee]:not([src])')));
+    if (thumbBusy) return;
+    thumbBusy = true;
+    (function next() {
+      var img = thumbWaiting.shift();
+      if (!img) { thumbBusy = false; render(current); return; }
+      img.src = thumbURL(img.dataset.tee, img.dataset.side);
+      render(current);
+      setTimeout(next, 10);
+    })();
+  }
+  function decorateStore() {
+    if (!has3D) return;
+    document.querySelectorAll('[data-offer-shirt]').forEach(function (el) {
+      el.style.backgroundImage = 'url(' + thumbURL(el.dataset.offerShirt, 'front') + ')';
+    });
+    var cat = document.querySelector('.cat-tees');
+    if (cat && !cat.querySelector('img')) {
+      var im = new Image(); im.alt = ''; im.src = thumbURL('#E2DBCD', 'front'); cat.appendChild(im);
+    }
+    render(current);
+  }
+
+  // ---------- store motion ----------
+  // tabs swap the best-sellers rail
+  document.querySelectorAll('.tab').forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      document.querySelectorAll('.tab').forEach(function (t) { t.setAttribute('aria-selected', t === tab ? 'true' : 'false'); });
+      fillRail(bestRail, tab.dataset.tab);
+      bestRail.classList.remove('swap'); void bestRail.offsetWidth; bestRail.classList.add('swap');
+      fillThumbs(bestRail);
+    });
+  });
+
+  // rails: arrows + drag with inertia
+  document.querySelectorAll('.rail').forEach(function (rail) {
+    var track = rail.querySelector('[data-rail]');
+    rail.querySelectorAll('.arrow').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var c = track.querySelector('.card');
+        var step = c ? (c.getBoundingClientRect().width + 16) * 2 : 400;
+        track.scrollBy({ left: step * Number(btn.dataset.dir), behavior: 'smooth' });
+      });
+    });
+    var down = false, startX = 0, startLeft = 0, lastX = 0, lastT = 0, v = 0, moved = false;
+    track.addEventListener('pointerdown', function (e) {
+      if (e.pointerType !== 'mouse') return; // touch scrolls natively
+      down = true; moved = false; startX = lastX = e.clientX; startLeft = track.scrollLeft; lastT = performance.now(); v = 0;
+    });
+    window.addEventListener('pointermove', function (e) {
+      if (!down) return;
+      var dx = e.clientX - startX;
+      if (Math.abs(dx) > 4 && !moved) { moved = true; track.classList.add('dragging'); }
+      if (!moved) return;
+      track.scrollLeft = startLeft - dx;
+      var now = performance.now(); v = (e.clientX - lastX) / Math.max(1, now - lastT); lastX = e.clientX; lastT = now;
+    });
+    window.addEventListener('pointerup', function () {
+      if (!down) return;
+      down = false;
+      if (!moved) return;
+      var vel = -v * 16;
+      (function glide() {
+        if (Math.abs(vel) < 0.5) { track.classList.remove('dragging'); return; }
+        track.scrollLeft += vel; vel *= 0.94;
+        requestAnimationFrame(glide);
+      })();
+    });
+    track.addEventListener('click', function (e) { if (moved) { e.preventDefault(); e.stopPropagation(); } }, true);
+  });
+
+  // cards: slight 3D tilt following the pointer
+  document.addEventListener('pointermove', function (e) {
+    var m = e.target.closest && e.target.closest('.card-media');
+    document.querySelectorAll('.card-media.tilting').forEach(function (el) {
+      if (el !== m) { el.classList.remove('tilting'); el.style.transform = ''; }
+    });
+    if (!m || e.pointerType !== 'mouse') return;
+    var r = m.getBoundingClientRect();
+    var x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+    m.classList.add('tilting');
+    m.style.transform = 'perspective(800px) rotateY(' + (x * 8).toFixed(2) + 'deg) rotateX(' + (-y * 8).toFixed(2) + 'deg) translateY(-4px)';
+  });
+
+  // add to bag: the counter answers
+  var bagCount = document.querySelector('.bag-count'), bag = 0;
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('.card-add');
+    if (!b) return;
+    bag++; bagCount.textContent = bag;
+    bagCount.parentElement.setAttribute('aria-label', 'Sacola, ' + bag + (bag === 1 ? ' item' : ' itens'));
+    bagCount.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.6)' }, { transform: 'scale(1)' }], { duration: 400, easing: 'cubic-bezier(.2,.7,.2,1)' });
+    b.textContent = 'Adicionado';
+    setTimeout(function () { b.textContent = 'Adicionar à sacola'; }, 1400);
+  });
+
+  // campaign: giant type slides with the scroll, halftone drifts
+  var campaign = document.querySelector('.campaign');
+  var ctRows = Array.prototype.slice.call(document.querySelectorAll('.ct-row'));
+  var dots = document.querySelector('.campaign-dots');
+  function campaignMotion() {
+    if (!campaign) return;
+    var r = campaign.getBoundingClientRect(), vh = window.innerHeight;
+    if (r.bottom < 0 || r.top > vh) return;
+    var t = (vh - r.top) / (vh + r.height); // 0 → 1 while it crosses the screen
+    ctRows.forEach(function (row) {
+      var sp = Number(row.dataset.speed);
+      row.style.transform = 'translateX(' + ((sp > 0 ? -40 : -10) + sp * t * 30).toFixed(2) + '%)';
+    });
+    dots.style.transform = 'translate3d(' + (t * -60).toFixed(1) + 'px,' + (t * -120).toFixed(1) + 'px,0)';
+  }
+
+  // titles reveal once when they enter
+  if ('IntersectionObserver' in window) {
+    // watch the parent: a clipped element can report as not visible
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        en.target.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('in'); });
+        io.unobserve(en.target);
+      });
+    }, { threshold: 0.2 });
+    document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el.parentElement); });
+  } else {
+    document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('in'); });
+  }
+
+  // ---------- start ----------
   var nav = $('nav');
   function onScroll() {
     nav.classList.toggle('solid', story.getBoundingClientRect().bottom < 80);
     target = progress();
     if (!running) { running = true; requestAnimationFrame(tick); }
+    campaignMotion();
   }
-
-  // ---------- product thumbnails from the 3D shirt ----------
-  function renderThumbs() {
-    if (!has3D) return;
-    var imgs = Array.prototype.slice.call(document.querySelectorAll('img[data-tee]'));
-    var VH = window.Shirt3D.VIEW_H;
-    var s = Math.min(VH * 0.74 / window.Shirt3D.HEIGHT, VH * 0.8 * 0.86 / 3.0);
-    (function next(i) {
-      if (i >= imgs.length) { render(current); return; }
-      var img = imgs[i];
-      img.src = window.Shirt3D.snapshot(BLANK, BLANK, palFromHex(img.dataset.tee), { w: 480, h: 600, s: s, ry: -0.42, rx: 0.08, y: 0.08 });
-      render(current);
-      setTimeout(function () { next(i + 1); }, 16);
-    })(0);
-  }
-
   if (has3D) window.Shirt3D.onChange = function () { render(current); };
   window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', function () { layout(); target = current = progress(); render(current); });
+  window.addEventListener('resize', function () { layout(); target = current = progress(); render(current); campaignMotion(); });
   layout();
   target = current = progress();
   render(current);
-  setTimeout(renderThumbs, 300);
+  campaignMotion();
+  setTimeout(function () { decorateStore(); fillThumbs(document); }, 300);
 })();
