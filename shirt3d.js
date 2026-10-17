@@ -27,7 +27,7 @@
   var SHOULDER_Y = 0.64; // top of the torso at the side seam
   var NECK = { a: 0.29, b: 0.25, z: -0.05, yFront: 0.80, yBack: 0.88 };
   var SLEEVE = { root: [0.62, 0.40, 0.0], dir: [0.6, -0.8, 0], len: 0.76, r0: 0.35, r1: 0.27 };
-  var NA = 176;          // samples around the torso
+  var NA = 144;          // samples around the torso
   var PERIM = 1;         // torso perimeter (computed)
 
   var gl, prog, loc = {}, mesh = null, tex = null, texCanvas = null, aspect = 1, ok = false;
@@ -155,7 +155,7 @@
   function buildGarment() {
     buildArcTable();
     var B = new Builder(), parts = {}, wrapped = [];
-    var TR = 64;
+    var TR = api.lowPower ? 34 : 52;
     var phiAt = function (cu) { return PHI[Math.round(cu * NA)]; };
 
     // torso: hem up to the shoulder line
@@ -367,13 +367,19 @@
 
   var api = {
     VIEW_H: VIEW_H,
+    lowPower: false,
     HEIGHT: (NECK.yBack + 0.05) - HEM_Y,
     CENTER_Y: ((NECK.yBack + 0.05) + HEM_Y) / 2,
     onChange: null,
     init: function (canvas) {
       try {
-        gl = canvas.getContext('webgl', { antialias: true, alpha: true, premultipliedAlpha: true });
+        gl = canvas.getContext('webgl', { antialias: true, alpha: true, premultipliedAlpha: true, powerPreference: 'high-performance' });
         if (!gl) return false;
+        // no GPU (hardware acceleration off): draw a lighter mesh at lower resolution
+        var dbg = gl.getExtension('WEBGL_debug_renderer_info');
+        var renderer = dbg ? String(gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL)) : '';
+        api.lowPower = /swiftshader|llvmpipe|software|basic render/i.test(renderer);
+        if (api.lowPower) { NA = 96; }
         prog = gl.createProgram();
         gl.attachShader(prog, compile(gl.VERTEX_SHADER, VS));
         gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, FS));
@@ -404,7 +410,7 @@
     },
     resize: function (w, h) {
       if (!ok) return;
-      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      var dpr = api.lowPower ? 0.6 : Math.min(window.devicePixelRatio || 1, 1.25);
       gl.canvas.width = Math.round(w * dpr); gl.canvas.height = Math.round(h * dpr);
       gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
       aspect = w / Math.max(1, h);

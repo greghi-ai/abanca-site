@@ -39,7 +39,7 @@ img { max-width: 100%; display: block; }
 .tag-lg { font-size: 18px; padding: 6px 10px; }
 
 /* ---------- nav: floating pill ---------- */
-.nav { position: fixed; top: 14px; left: var(--gutter); right: var(--gutter); z-index: 20; display: flex; align-items: center; gap: 24px; height: 56px; padding: 0 10px 0 26px; border-radius: 999px; background: rgba(18,19,22,0.72); -webkit-backdrop-filter: blur(14px) saturate(1.2); backdrop-filter: blur(14px) saturate(1.2); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08); color: #fff; transition: background 0.3s, transform 0.4s cubic-bezier(.2,.7,.2,1); }
+.nav { position: fixed; top: 14px; left: var(--gutter); right: var(--gutter); z-index: 20; display: flex; align-items: center; gap: 24px; height: 56px; padding: 0 10px 0 26px; border-radius: 999px; background: rgba(18,19,22,0.88); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08); color: #fff; transition: background 0.3s, transform 0.4s cubic-bezier(.2,.7,.2,1); }
 .nav.solid { background: rgba(18,19,22,0.94); }
 .nav.hide { transform: translateY(-130%); }
 .logo { font-family: var(--display); font-size: 26px; letter-spacing: 0.01em; line-height: 1; color: #fff; }
@@ -67,14 +67,17 @@ img { max-width: 100%; display: block; }
 .box.is-code::before { color: var(--amber); }
 .room-floor { position: absolute; left: 0; right: 0; top: var(--floor); bottom: 0; background: linear-gradient(180deg, #1C1D20 0%, #121315 100%); box-shadow: 0 -1px 0 rgba(255,255,255,0.08); }
 .room-refl { position: absolute; inset: 0; width: 100%; height: 100%; }
-.room-spot { position: absolute; inset: 0; background:
-    radial-gradient(ellipse 24% 52% at var(--sx) 34%, rgba(255,218,160,0.30), rgba(255,218,160,0.08) 55%, rgba(255,218,160,0) 75%),
-    radial-gradient(ellipse 22% 6% at var(--sx) var(--floor), rgba(255,214,150,0.28), rgba(255,214,150,0) 70%);
-  mix-blend-mode: screen; }
-.room-vignette { position: absolute; inset: 0; background: radial-gradient(ellipse 70% 80% at var(--sx) 45%, rgba(10,10,12,0) 22%, rgba(10,10,12,0.88) 100%); }
+.room-spot { position: absolute; top: 0; bottom: 0; left: -50%; width: 100%; will-change: transform; background:
+    radial-gradient(ellipse 24% 52% at 50% 34%, rgba(255,218,160,0.22), rgba(255,218,160,0.06) 55%, rgba(255,218,160,0) 75%),
+    radial-gradient(ellipse 22% 6% at 50% var(--floor), rgba(255,214,150,0.2), rgba(255,214,150,0) 70%),
+    radial-gradient(ellipse 70% 80% at 50% 45%, rgba(10,10,12,0) 22%, rgba(10,10,12,0.88) 100%); }
+.room-spot::before, .room-spot::after { content: ""; position: absolute; top: 0; bottom: 0; width: 100%; background: rgba(10,10,12,0.88); }
+.room-spot::before { right: 100%; }
+.room-spot::after { left: 100%; }
+
 
 /* vault on the street wall */
-.vbg { position: absolute; inset: -40px; background: #15110e url("assets/vault/wall.jpg") center / cover no-repeat; filter: blur(22px) brightness(0.45) saturate(0.9); transform-origin: 50% 52%; }
+.vbg { position: absolute; inset: -40px; background: #15110e url("assets/vault/wall-blur.jpg") center / cover no-repeat; transform-origin: 50% 52%; will-change: transform; }
 .vscene { position: absolute; left: 0; top: 0; width: 1200px; aspect-ratio: 2752 / 1536; transform-origin: 50% 50.13%; will-change: transform; perspective: 2400px; }
 .vwall { position: absolute; inset: 0; width: 100%; height: 100%;
   -webkit-mask-image: radial-gradient(ellipse 58% 62% at 50% 50%, #000 62%, transparent 100%);
@@ -266,7 +269,7 @@ img { max-width: 100%; display: block; }
   .store-badge b { font-size: 56px; }
 }
 @media (max-width: 760px) {
-  .look { top: auto !important; bottom: 20px; left: 16px !important; right: 16px !important; width: auto; padding: 20px; background: rgba(19,20,23,0.86); backdrop-filter: blur(8px); border-radius: 14px; }
+  .look { top: auto !important; bottom: 20px; left: 16px !important; right: 16px !important; width: auto; padding: 20px; background: rgba(19,20,23,0.92); border-radius: 14px; }
   .look-title { font-size: 44px; }
   .look-desc { margin-top: 10px; font-size: 15px; }
   .look-specs { display: none; }

@@ -103,7 +103,7 @@
   // ---------- elements ----------
   var $ = function (id) { return document.getElementById(id); };
   var story = $('story'), stage = story.querySelector('.stage');
-  var room = $('room'), lockers = $('lockers'), refl = $('refl'), reflCtx = refl.getContext('2d');
+  var room = $('room'), lockers = $('lockers'), refl = $('refl'), reflCtx = refl.getContext('2d'), spot = $('spot');
   var vbg = $('vbg'), vscene = $('vscene'), vdoor = $('vdoor'), vplate = $('vplate');
   var vlight = $('vlight'), vrays = $('vrays'), vlabel = $('vlabel'), vshade = $('vshade');
   var cells = Array.prototype.slice.call(document.querySelectorAll('.vcell'));
@@ -158,7 +158,7 @@
     var hpx = has3D ? shirtS * window.Shirt3D.HEIGHT / window.Shirt3D.VIEW_H * stageH : stageH * 0.5;
     floorPx = Math.round(restTop / 100 * stageH + hpx * 0.5 + 4);
     room.style.setProperty('--floor', floorPx + 'px');
-    dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    dpr = 0.5; // the reflection is blurry anyway: half resolution is plenty
     refl.width = Math.round(stageW * dpr); refl.height = Math.round(stageH * dpr);
     buildLockers();
   }
@@ -199,8 +199,12 @@
     reflCtx.globalCompositeOperation = 'source-over';
   }
 
+  var vaultGone = false, reflOn = true;
   function render(p) {
-    // --- vault: password, dial, door, dive
+    // --- vault: password, dial, door, dive (skipped entirely once it has left the screen)
+    var past = p > T.sceneOut[1] + 0.01;
+    if (past && vaultGone) { renderShirt(p); return; }
+    vaultGone = past;
     var typed = T.digits.filter(function (t) { return p >= t; }).length;
     var accepted = p >= T.ok;
     cells.forEach(function (c, i) {
@@ -232,6 +236,10 @@
     intro.style.transform = 'translateY(' + (-24 * introOut).toFixed(1) + 'px)';
     cap1.style.opacity = (smooth(T.ok, T.ok + 0.012, p) * (1 - smooth(T.pop[0], T.pop[1], p))).toFixed(3);
 
+    renderShirt(p);
+  }
+
+  function renderShirt(p) {
     // --- shirt
     var X = narrow ? [50, 50, 50, 50, 50] : [50, 63, 37, 63, 37];
     var K = T.path(X);
@@ -251,7 +259,7 @@
         }
       }
     }
-    room.style.setProperty('--sx', left.toFixed(2) + '%');
+    spot.style.transform = 'translate3d(' + (left / 100 * stageW).toFixed(1) + 'px,0,0)';
     var r = Math.max(0, ry);
     var look = r < 90 ? 0 : r < 270 ? 1 : r < 450 ? 2 : 3;
     var shirtOn = smooth(T.arrive[0] - 0.01, T.arrive[0] + 0.03, p);
@@ -269,7 +277,7 @@
         rz: tilt * Math.PI / 180,
         s: shirtS
       });
-      drawReflection(smooth(0.42, 0.45, p));
+      if (!window.Shirt3D.lowPower) { drawReflection(smooth(0.42, 0.45, p)); reflOn = true; }
       var px = left / 100 * stageW;
       var sw = (shirtS * window.Shirt3D.HEIGHT / VH * stageH) * 0.95 * (0.62 + 0.38 * Math.abs(Math.cos(ry * Math.PI / 180)));
       shadow.style.width = sw.toFixed(0) + 'px';
@@ -277,7 +285,7 @@
       shadow.style.opacity = (smooth(0.42, 0.46, p) * 0.9).toFixed(3);
     } else {
       shadow.style.opacity = '0';
-      drawReflection(0);
+      if (reflOn) { drawReflection(0); reflOn = false; }
     }
 
     // --- copy for the active look
@@ -300,10 +308,12 @@
   }
   function tick() {
     var d = target - current;
-    current = Math.abs(d) < 0.0004 ? target : current + d * 0.14;
+    // without a GPU, skip the easing frames and draw only where the scroll lands
+    current = (Math.abs(d) < 0.0004 || (has3D && window.Shirt3D.lowPower)) ? target : current + d * 0.14;
     render(current);
     if (current !== target) requestAnimationFrame(tick); else running = false;
   }
+  var storyOnScreen = true;
   // ---------- product thumbnails from the 3D shirt (front + back, cached per colour) ----------
   var thumbCache = {}, thumbBusy = false, thumbWaiting = [];
   function thumbURL(hex, side) {
@@ -312,7 +322,7 @@
       var VH = window.Shirt3D.VIEW_H;
       var s = Math.min(VH * 0.74 / window.Shirt3D.HEIGHT, VH * 0.8 * 0.86 / 3.0);
       thumbCache[key] = window.Shirt3D.snapshot(BLANK, BLANK, palFromHex(hex), {
-        w: 520, h: 650, s: s, rx: 0.08, y: 0.06, ry: side === 'back' ? Math.PI + 0.42 : -0.42
+        w: 400, h: 500, s: s, rx: 0.08, y: 0.06, ry: side === 'back' ? Math.PI + 0.42 : -0.42
       });
     }
     return thumbCache[key];
@@ -327,7 +337,7 @@
       if (!img) { thumbBusy = false; render(current); return; }
       img.src = thumbURL(img.dataset.tee, img.dataset.side);
       render(current);
-      setTimeout(next, 10);
+      (window.requestIdleCallback || function (f) { return setTimeout(f, 30); })(next);
     })();
   }
   function decorateStore() {
@@ -391,12 +401,12 @@
   });
 
   // cards: slight 3D tilt following the pointer
+  var tilted = null;
   document.addEventListener('pointermove', function (e) {
     var m = e.target.closest && e.target.closest('.card-media');
-    document.querySelectorAll('.card-media.tilting').forEach(function (el) {
-      if (el !== m) { el.classList.remove('tilting'); el.style.transform = ''; }
-    });
+    if (tilted && tilted !== m) { tilted.classList.remove('tilting'); tilted.style.transform = ''; tilted = null; }
     if (!m || e.pointerType !== 'mouse') return;
+    tilted = m;
     var r = m.getBoundingClientRect();
     var x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
     m.classList.add('tilting');
@@ -448,11 +458,24 @@
 
   // ---------- start ----------
   var nav = $('nav');
+  var ticking2 = false;
   function onScroll() {
-    nav.classList.toggle('solid', story.getBoundingClientRect().bottom < 80);
-    target = progress();
-    if (!running) { running = true; requestAnimationFrame(tick); }
-    campaignMotion();
+    if (ticking2) return;
+    ticking2 = true;
+    requestAnimationFrame(function () {
+      ticking2 = false;
+      var r = story.getBoundingClientRect();
+      nav.classList.toggle('solid', r.bottom < 80);
+      storyOnScreen = r.bottom > 0;
+      var t = progress();
+      // nothing to redraw while the story is off screen and already settled
+      if (t !== target || current !== target) {
+        target = t;
+        if (!running && storyOnScreen) { running = true; requestAnimationFrame(tick); }
+        else if (!storyOnScreen) { current = target; }
+      }
+      campaignMotion();
+    });
   }
   if (has3D) window.Shirt3D.onChange = function () { render(current); };
   window.addEventListener('scroll', onScroll, { passive: true });
